@@ -35,6 +35,7 @@ class Room extends EventEmitter
 		// Router media codecs.
 		const { mediaCodecs } = config.mediasoup.routerOptions;
 
+		logger.debug('mediacodecs = ' + mediaCodecs);
 		// Create a mediasoup Router.
 		const mediasoupRouter = await mediasoupWorker.createRouter({ mediaCodecs });
 
@@ -62,7 +63,7 @@ class Room extends EventEmitter
 	{
 		super();
 		this.setMaxListeners(Infinity);
-
+		logger.info('Room id = ' +roomId);
 		// Room id.
 		// @type {String}
 		this._roomId = roomId;
@@ -750,15 +751,15 @@ class Room extends EventEmitter
 		});
 
 		// // Optimization: Create a server-side Consumer for each Peer.
-		// for (const peer of this._getJoinedPeers())
-		// {
-		// 	this._createDataConsumer(
-		// 		{
-		// 			dataConsumerPeer : peer,
-		// 			dataProducerPeer : broadcaster,
-		// 			dataProducer: dataProducer
-		// 		});
-		// }
+		for (const peer of this._getJoinedPeers())
+		{
+			this._createDataConsumer(
+				{
+					dataConsumerPeer : peer,
+					dataProducerPeer : broadcaster,
+					dataProducer: dataProducer
+				});
+		}
 
 		return {
 			id : dataProducer.id
@@ -808,6 +809,10 @@ class Room extends EventEmitter
 	 */
 	async _handleProtooRequest(peer, request, accept, reject)
 	{
+		//logger.error('--------------------------------------------');
+		logger.error('_handleProtooRequest peer = ' + peer + ', request.method = ' + request.method);
+		//logger.error(peer);
+		//logger.error('--------------------------------------------');
 		switch (request.method)
 		{
 			case 'getRouterRtpCapabilities':
@@ -854,7 +859,7 @@ class Room extends EventEmitter
 						displayName : joinedPeer.data.displayName,
 						device      : joinedPeer.data.device
 					}));
-
+				
 				accept({ peers: peerInfos });
 
 				// Mark the new Peer as joined.
@@ -1758,6 +1763,8 @@ class Room extends EventEmitter
 		// Send a protoo request to the remote Peer with Consumer parameters.
 		try
 		{
+			var timestamp = (new Date()).valueOf();
+			logger.error('@@@@@ newDataConsumer = '+ timestamp);
 			await dataConsumerPeer.request(
 				'newDataConsumer',
 				{
@@ -1775,6 +1782,84 @@ class Room extends EventEmitter
 		{
 			logger.warn('_createDataConsumer() | failed:%o', error);
 		}
+	}
+	
+	/**
+	 * Delete a Broadcaster.
+	 *
+	 * @type {String} broadcasterId
+	 */
+	getAllPeerProduceData()
+	{
+		
+		// Reply with the list of Peers and their Producers.
+		const peerInfos = [];
+		
+		const joinedPeers =
+		[
+			...this._getJoinedPeers(),
+			...this._broadcasters.values()
+		];
+		//const joinedPeers = this._getJoinedPeers();
+
+		// Just fill the list of Peers if the Broadcaster provided its rtpCapabilities.
+		
+		for (const joinedPeer of joinedPeers)
+		{
+			const peerInfo =
+			{
+				id          : joinedPeer.id,
+				displayName : joinedPeer.data.displayName,
+				device      : joinedPeer.data.device,
+				transports	: [],
+				dataProducers   : [],
+				dataConsumers :[]
+			};
+			for (const transport of joinedPeer.data.transports.values())
+			{
+				peerInfo.transports.push(
+					{
+						id   : transport.id
+					});
+			}
+			for (const dataproducer of joinedPeer.data.dataProducers.values())
+			{
+				// Ignore Producers that the Broadcaster cannot consume.
+				
+
+				peerInfo.dataProducers.push(
+					{
+						id   : dataproducer.id,
+						kind : dataproducer.kind,
+						label: dataproducer.label,
+						protocol:dataProducer.protocol
+					});
+			}
+			for (const dataConsumer of joinedPeer.data.dataConsumers.values())
+			{
+				peerInfo.dataConsumers.push(
+					{
+						id                   : dataConsumer.id,
+						sctpStreamParameters : dataConsumer.sctpStreamParameters,
+						label                : dataConsumer.label,
+						protocol             : dataConsumer.protocol,
+						dataProducerId		 : dataConsumer.dataProducerId,
+						bufferedAmountLowThreshold: dataConsumer.bufferedAmountLowThreshold
+					});
+			}
+			//peerId               : dataProducerPeer ? dataProducerPeer.id : null,
+			//		dataProducerId       : dataProducer.id,
+			
+			//		appData              : dataProducer.appData
+			//		id                   : dataConsumer.id,
+			//		sctpStreamParameters : dataConsumer.sctpStreamParameters,
+			//		label                : dataConsumer.label,
+			//		protocol             : dataConsumer.protocol,
+			peerInfos.push(peerInfo);
+		}
+		
+
+		return { peers: peerInfos };
 	}
 }
 

@@ -18,8 +18,9 @@
     "colors": "^1.4.0",
     "debug": "^4.3.1",
     "express": "^4.17.1",
+    "fsevents": "^1.2.13",
     "heapdump": "^0.3.15",
-    "mediasoup": "github:versatica/mediasoup#v3",
+    "mediasoup": "^3.8.0",
     "pidusage": "^2.0.21",
     "protoo-server": "^4.0.5"
   },
