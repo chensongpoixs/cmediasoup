@@ -677,7 +677,7 @@ class Room extends EventEmitter
 			{
 				dataProducerId
 			});
-
+		
 		// Store it.
 		broadcaster.data.dataConsumers.set(dataConsumer.id, dataConsumer);
 
@@ -1730,8 +1730,9 @@ class Room extends EventEmitter
 		{
 			dataConsumer = await transport.consumeData(
 				{
-					dataProducerId : dataProducer.id
+					dataProducerId : dataProducer.id,
 				});
+				dataConsumer.displayName = dataProducerPeer.data.displayName;
 		}
 		catch (error)
 		{
@@ -1844,7 +1845,7 @@ class Room extends EventEmitter
 						label                : dataConsumer.label,
 						protocol             : dataConsumer.protocol,
 						dataProducerId		 : dataConsumer.dataProducerId,
-						bufferedAmountLowThreshold: dataConsumer.bufferedAmountLowThreshold
+						displayName			 : dataConsumer.displayName
 					});
 			}
 			//peerId               : dataProducerPeer ? dataProducerPeer.id : null,
