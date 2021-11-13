@@ -176,7 +176,7 @@ async function createExpressApp()
 	expressApp.get(
 	'/rooms/:roomId/chensong', (req, res) =>
 	{
-		logger.error('getproducedata  =============/rooms/:roomId/getproducedata');
+		//logger.error('getproducedata  =============/rooms/:roomId/getproducedata');
 		
 
 		const data = req.room.getAllPeerProduceData();
@@ -407,6 +407,31 @@ async function createExpressApp()
 			}
 		});
 	
+	expressApp.post(
+		'/rooms/:roomId/peerId/:peerId/transports/:transportId/consume/data',
+		async (req, res, next) =>
+		{
+			logger.error('===/rooms/:roomId/peerId/:peerId/transports/:transportId/consume/data');
+			logger.info('req =' + req.body);
+			const { peerId, transportId } = req.params;
+			const { dataProducerId } = req.body;
+
+			try
+			{
+				const data = await req.room.createBroadcasterDataConsumer(
+					{
+						peerId,
+						transportId,
+						dataProducerId
+					});
+
+				res.status(200).json(data);
+			}
+			catch (error)
+			{
+				next(error);
+			}
+		});
 	/**
 	 * POST API to create a mediasoup DataProducer associated to a Broadcaster.
 	 * The exact Transport in which the DataProducer must be created is signaled in

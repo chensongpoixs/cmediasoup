@@ -810,7 +810,7 @@ class Room extends EventEmitter
 	async _handleProtooRequest(peer, request, accept, reject)
 	{
 		//logger.error('--------------------------------------------');
-		logger.error('_handleProtooRequest peer = ' + peer + ', request.method = ' + request.method);
+		//logger.error('_handleProtooRequest peer = ' + peer + ', request.method = ' + request.method);
 		//logger.error(peer);
 		//logger.error('--------------------------------------------');
 		switch (request.method)
@@ -1732,7 +1732,13 @@ class Room extends EventEmitter
 				{
 					dataProducerId : dataProducer.id,
 				});
-				dataConsumer.displayName = dataProducerPeer.data.displayName;
+				if (dataProducer.label === 'chat')
+				{
+					logger.error('displayName = ' + dataProducerPeer.data.displayName + ', dataConsumerid = ' + dataConsumer.id);
+					logger.error('dataConsumerPeer name = '+ dataConsumerPeer.data.displayName +',dataProducerId = ' + dataProducer.id);
+					dataConsumer.displayName = dataProducerPeer.data.displayName;
+					dataConsumer.dataProducerAppData        = dataProducer.appData
+				}
 		}
 		catch (error)
 		{
@@ -1748,6 +1754,7 @@ class Room extends EventEmitter
 		dataConsumer.on('transportclose', () =>
 		{
 			// Remove from its map.
+			logger.error('delete dataConsumerid = ' +dataConsumer.id );
 			dataConsumerPeer.data.dataConsumers.delete(dataConsumer.id);
 		});
 
@@ -1755,7 +1762,7 @@ class Room extends EventEmitter
 		{
 			// Remove from its map.
 			dataConsumerPeer.data.dataConsumers.delete(dataConsumer.id);
-
+			logger.error('delete dataConsumerid = ' +dataConsumer.id );
 			dataConsumerPeer.notify(
 				'dataConsumerClosed', { dataConsumerId: dataConsumer.id })
 				.catch(() => {});
@@ -1838,15 +1845,19 @@ class Room extends EventEmitter
 			}
 			for (const dataConsumer of joinedPeer.data.dataConsumers.values())
 			{
-				peerInfo.dataConsumers.push(
+				if (dataConsumer.label === 'chat' )
+				{
+					peerInfo.dataConsumers.push(
 					{
 						id                   : dataConsumer.id,
 						sctpStreamParameters : dataConsumer.sctpStreamParameters,
 						label                : dataConsumer.label,
 						protocol             : dataConsumer.protocol,
 						dataProducerId		 : dataConsumer.dataProducerId,
-						displayName			 : dataConsumer.displayName
+						displayName			 : dataConsumer.displayName,
+						AppData					 : dataConsumer.dataProducerAppData
 					});
+				}
 			}
 			//peerId               : dataProducerPeer ? dataProducerPeer.id : null,
 			//		dataProducerId       : dataProducer.id,
