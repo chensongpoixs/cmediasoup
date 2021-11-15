@@ -58,6 +58,48 @@ domready(async () =>
 	run();
 });
 
+
+function initMouseMove()
+{
+ if(!document.all)
+ {
+  document.captureEvents(Event.MOUSEMOVE);
+  //document.captureEvents(Event.CLICK);
+ }
+ document.onmousemove = mouseMove;
+ 
+ //document.onmouseover = this.mouseMove;  //注册鼠标经过时事件处理函数
+//document.onmouseout = this.mouseMove;  //注册鼠标移开时事件处理函数
+//document.onmousedown = this.mouseMove;  //注册鼠标按下时事件处理函数
+//document.onmouseup = this.mouseMove;  //注册鼠标松开时事件处理函数
+// p1.onmousemove = this.mouseMove;  //注册鼠标移动时事件处理函数
+document.onclick = mouseMove;  //注册鼠标单击时事件处理函数
+ //document.ondblclick = this.mouseMove;  //注册鼠标双击时事件处理函数
+}
+
+// 鼠标移动事件
+async function  mouseMove(e)
+{
+	console.log('==========================');
+	console.log( e);
+	console.log('==========================');
+	 var x,y;
+	 if(!document.all){
+	 
+	  x=e.pageX;
+	  y=e.pageY;
+	 }else{
+	  x=document.body.scrollLeft+event.clientX;
+	  y=document.body.scrollTop+event.clientY;
+	 }
+	 var postion = 'x = ' + x + ', y = ' + y +', wight = '+	 document.body.offsetWidth  + ', height = ' + document.body.offsetHeight;
+	 console.log(postion);
+	 //await this.test();
+	 roomClient.sendChatMessage(postion);
+	 
+	 logger.debug('sendChatMessage() [text:"%s]', postion);
+}
+
 async function run()
 {
 	logger.debug('run() [environment:%s]', process.env.NODE_ENV);
@@ -186,7 +228,7 @@ async function run()
 			externalVideo,
 			e2eKey
 		});
-
+	
 	// NOTE: For debugging.
 	// eslint-disable-next-line require-atomic-updates
 	window.CLIENT = roomClient;
@@ -201,7 +243,14 @@ async function run()
 		</Provider>,
 		document.getElementById('mediasoup-demo-app-container')
 	);
+
+	initMouseMove();
 }
+
+
+
+
+
 
 // NOTE: Debugging stuff.
 
