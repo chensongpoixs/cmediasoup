@@ -9,8 +9,8 @@ import * as e2e from './e2e';
 
 const VIDEO_CONSTRAINS =
 {
-	qvga : { width: { ideal: 320 }, height: { ideal: 240 } },
-	vga  : { width: { ideal: 640 }, height: { ideal: 480 } },
+	qvga : { width: { ideal: 1280 }, height: { ideal: 720 } },
+	vga  : { width: { ideal: 1280 }, height: { ideal: 720 } },
 	hd   : { width: { ideal: 1280 }, height: { ideal: 720 } }
 };
 
@@ -261,9 +261,33 @@ export default class RoomClient
 		store.dispatch(
 			stateActions.setRoomState('closed'));
 	}
-
+	
+	
+	/*
+	initMouseMove()
+	{
+	 if(!document.all)
+	 {
+	  document.captureEvents(Event.MOUSEMOVE);
+	  //document.captureEvents(Event.CLICK);
+	 }
+	 //document.onmousemove = this.mouseMove;
+	 
+	 //document.onmouseover = this.mouseMove;  //注册鼠标经过时事件处理函数
+    //document.onmouseout = this.mouseMove;  //注册鼠标移开时事件处理函数
+    //document.onmousedown = this.mouseMove;  //注册鼠标按下时事件处理函数
+    //document.onmouseup = this.mouseMove;  //注册鼠标松开时事件处理函数
+   // p1.onmousemove = this.mouseMove;  //注册鼠标移动时事件处理函数
+    document.onclick = this.mouseMove;  //注册鼠标单击时事件处理函数
+   // document.ondblclick = this.mouseMove;  //注册鼠标双击时事件处理函数
+	}*/
+	
+	
 	async join()
 	{
+		//var ws_url = 'ws://127.0.0.1:8888/?roomId=chensong&peerId=xiqhlyrn';
+		logger.debug('join url = ' + this._protooUrl);
+		//this.initMouseMove();
 		const protooTransport = new protooClient.WebSocketTransport(this._protooUrl);
 
 		this._protoo = new protooClient.Peer(protooTransport);
@@ -321,7 +345,8 @@ export default class RoomClient
 			logger.debug(
 				'proto "request" event [method:%s, data:%o]',
 				request.method, request.data);
-
+				var timestamp = (new Date()).valueOf();
+			logger.debug('var timestamp = (new Date()).valueOf() = ' + timestamp);
 			switch (request.method)
 			{
 				case 'newConsumer':
@@ -987,19 +1012,21 @@ export default class RoomClient
 				const { resolution } = this._webcam;
 
 				if (!device)
+				{
 					throw new Error('no webcam devices');
+				}
 
 				logger.debug('enableWebcam() | calling getUserMedia()');
-
+				logger.debug('enableWebcam()++++++++++++++++++++++++');
 				const stream = await navigator.mediaDevices.getUserMedia(
 					{
-						video :
+						video : 
 						{
 							deviceId : { ideal: device.deviceId },
 							...VIDEO_CONSTRAINS[resolution]
 						}
 					});
-
+				logger.debug('enableWebcam()------------------------------------');
 				track = stream.getVideoTracks()[0];
 			}
 			else
@@ -1884,6 +1911,28 @@ export default class RoomClient
 				}));
 		}
 	}
+	
+/*	mouseMove(e)
+	{
+		console.log('==========================');
+		console.log( e);
+		console.log('==========================');
+	 var x,y;
+	 if(!document.all){
+	 
+	  x=e.pageX;
+	  y=e.pageY;
+	 }else{
+	  x=document.body.scrollLeft+event.clientX;
+	  y=document.body.scrollTop+event.clientY;
+	 }
+	 var postion = 'x = ' + x + ', y = ' + y;
+	 console.log('x = ' + x + ', y = ' + y +', wight = '+	 document.body.offsetWidth  + ', height = ' + document.body.offsetHeight);
+	 //await this.test();
+	this.sendChatMessage('x = ' + x + ', y = ' + y);
+	 
+	 logger.debug('sendChatMessage() [text:"%s]', postion);
+	}*/
 
 	async sendBotMessage(text)
 	{
@@ -2094,6 +2143,7 @@ export default class RoomClient
 
 	async getConsumerLocalStats(consumerId)
 	{
+		logger.debug('getConsumerLocalStats consumerId = ' + consumerId);
 		const consumer = this._consumers.get(consumerId);
 
 		if (!consumer)
@@ -2211,7 +2261,7 @@ export default class RoomClient
 						additionalSettings 	   :
 							{ encodedInsertableStreams: this._e2eKey && e2e.isSupported() }
 					});
-
+				// 创建offer 
 				this._sendTransport.on(
 					'connect', ({ dtlsParameters }, callback, errback) => // eslint-disable-line no-shadow
 					{

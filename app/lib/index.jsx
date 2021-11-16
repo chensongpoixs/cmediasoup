@@ -70,14 +70,16 @@ function initMouseMove()
  
  //document.onmouseover = this.mouseMove;  //注册鼠标经过时事件处理函数
 //document.onmouseout = this.mouseMove;  //注册鼠标移开时事件处理函数
-//document.onmousedown = this.mouseMove;  //注册鼠标按下时事件处理函数
-//document.onmouseup = this.mouseMove;  //注册鼠标松开时事件处理函数
+document.onmousedown = mouseDown;  //注册鼠标按下时事件处理函数
+document.onmouseup = mouseUp;  //注册鼠标松开时事件处理函数
 // p1.onmousemove = this.mouseMove;  //注册鼠标移动时事件处理函数
-document.onclick = mouseMove;  //注册鼠标单击时事件处理函数
+document.onclick = mouseClick;  //注册鼠标单击时事件处理函数
  //document.ondblclick = this.mouseMove;  //注册鼠标双击时事件处理函数
 }
 
-// 鼠标移动事件
+
+
+
 async function  mouseMove(e)
 {
 	console.log('==========================');
@@ -92,12 +94,79 @@ async function  mouseMove(e)
 	  x=document.body.scrollLeft+event.clientX;
 	  y=document.body.scrollTop+event.clientY;
 	 }
-	 var postion = 'x = ' + x + ', y = ' + y +', wight = '+	 document.body.offsetWidth  + ', height = ' + document.body.offsetHeight;
-	 console.log(postion);
-	 //await this.test();
-	 roomClient.sendChatMessage(postion);
+	action_mouse(0, x, y, document.body.offsetWidth, document.body.offsetHeight);
+}
+
+// 鼠标移动事件
+async function  mouseClick(e)
+{
+	console.log('==========================');
+	console.log( e);
+	console.log('==========================');
+	 var x,y;
+	 if(!document.all){
 	 
-	 logger.debug('sendChatMessage() [text:"%s]', postion);
+	  x=e.pageX;
+	  y=e.pageY;
+	 }else{
+	  x=document.body.scrollLeft+event.clientX;
+	  y=document.body.scrollTop+event.clientY;
+	 }
+	action_mouse(1, x, y, document.body.offsetWidth, document.body.offsetHeight);
+}
+
+
+async function  mouseDown(e)
+{
+	console.log('==========================');
+	console.log( e);
+	console.log('==========================');
+	 var x,y;
+	 if(!document.all){
+	 
+	  x=e.pageX;
+	  y=e.pageY;
+	 }else{
+	  x=document.body.scrollLeft+event.clientX;
+	  y=document.body.scrollTop+event.clientY;
+	 }
+	action_mouse(2, x, y, document.body.offsetWidth, document.body.offsetHeight);
+}
+
+
+async function  mouseUp(e)
+{
+	console.log('==========================');
+	console.log( e);
+	console.log('==========================');
+	 var x,y;
+	 if(!document.all){
+	 
+	  x=e.pageX;
+	  y=e.pageY;
+	 }else{
+	  x=document.body.scrollLeft+event.clientX;
+	  y=document.body.scrollTop+event.clientY;
+	 }
+	action_mouse(3, x, y, document.body.offsetWidth, document.body.offsetHeight);
+}
+
+async function action_mouse(action, wight, height, windowwidth, windowheight)
+{
+	 var move_xy =
+	 {
+		 "event" : action,
+		 "wight" : wight,
+		 "height": height,
+		 "windowwidth" : windowwidth,
+		 "windowheight" : windowheight
+	 };
+	// var postion = 'x = ' + x + ', y = ' + y +', wight = '+	 document.body.offsetWidth  + ', height = ' + document.body.offsetHeight;
+	 console.log(JSON.stringify(move_xy));
+	 //await this.test();
+	 roomClient.sendChatMessage(JSON.stringify(move_xy));
+	 
+	 logger.debug('sendChatMessage() [text:"%s]', move_xy);
 }
 
 async function run()

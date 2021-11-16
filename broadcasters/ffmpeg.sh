@@ -6,7 +6,7 @@ function show_usage()
 	echo "USAGE"
 	echo "-----"
 	echo
-	echo "  SERVER_URL=https://my.mediasoup-demo.org:4443 ROOM_ID=test MEDIA_FILE=./test.mp4 ./ffmpeg.sh"
+	echo "  SERVER_URL=https://127.0.0.1:4443 ROOM_ID=test MEDIA_FILE=./test.mp4 ./ffmpeg.sh"
 	echo
 	echo "  where:"
 	echo "  - SERVER_URL is the URL of the mediasoup-demo API server"
@@ -23,6 +23,11 @@ function show_usage()
 }
 
 echo
+
+set SERVER_URL=https://127.0.0.1:4443 
+set ROOM_ID=test 
+
+set MEDIA_FILE=./test.mp4
 
 if [ -z "${SERVER_URL}" ] ; then
 	>&2 echo "ERROR: missing SERVER_URL environment variable"
@@ -74,7 +79,7 @@ VIDEO_PT=101
 # not abort since we are not allowed to initiate a room..
 #
 echo ">>> verifying that room '${ROOM_ID}' exists..."
-
+# http --check-status GET  https://127.0.0.1:4443/rooms/test
 ${HTTPIE_COMMAND} \
 	GET ${SERVER_URL}/rooms/${ROOM_ID} > /dev/null
 
