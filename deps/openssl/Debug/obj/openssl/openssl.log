@@ -1,0 +1,11 @@
+﻿  bio_ssl.c
+  d1_lib.c
+  d1_msg.c
+  d1_srtp.c
+  methods.c
+  packet.c
+  pqueue.c
+  dtls1_bitmap.c
+  rec_layer_d1.c
+  rec_layer_s3.c
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Professional\Common7\IDE\VC\VCTargets\Microsoft.CppCommon.targets(423,5): error MSB6003: The specified task executable "CL.exe" could not be run. Could not find a part of the path 'D:\Work\cmedia_server\webrtc_google\lib\test\mediasoup-demo\server\node_modules\mediasoup\worker\deps\libsrtp\Debug\obj\openssl\openssl.tlog\CL.command.1.tlog'.
