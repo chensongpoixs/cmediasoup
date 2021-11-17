@@ -59,6 +59,70 @@ domready(async () =>
 });
 
 
+
+//function scroll(){
+//    //console.log("打印log日志");实时看下效果
+//    console.log("开始滚动！");
+//   }
+// 
+//   var scrollFunc = function (e) { 
+//    e = e || window.event; 
+//    if (e.wheelDelta) { //第一步：先判断浏览器IE，谷歌滑轮事件    
+//     if (e.wheelDelta > 0) { //当滑轮向上滚动时 
+//      console.log("滑轮向上滚动"); 
+//     } 
+//     if (e.wheelDelta < 0) { //当滑轮向下滚动时 
+//      console.log("滑轮向下滚动"); 
+//     } 
+//    } else if (e.detail) { //Firefox滑轮事件 
+//     if (e.detail> 0) { //当滑轮向上滚动时 
+//      console.log("滑轮向上滚动"); 
+//     } 
+//     if (e.detail< 0) { //当滑轮向下滚动时 
+//      console.log("滑轮向下滚动"); 
+//     } 
+//    } 
+//   }
+//   //给页面绑定滑轮滚动事件 
+//   if (document.addEventListener) {//firefox 
+//    document.addEventListener('DOMMouseScroll', scrollFunc, false); 
+//   } 
+//   //滚动滑轮触发scrollFunc方法 //ie 谷歌 
+//   window.onmousewheel = document.onmousewheel = scrollFunc;
+
+
+async  function scrollFunc(e) 
+{ 
+    e = e || window.event; 
+    if (e.wheelDelta) 
+	{ //第一步：先判断浏览器IE，谷歌滑轮事件    
+     if (e.wheelDelta > 0) 
+	 { //当滑轮向上滚动时 
+		action_mouse(4, 0, 0);
+      console.log("滑轮向上滚动"); 
+     } 
+     if (e.wheelDelta < 0) 
+	 { //当滑轮向下滚动时 
+		action_mouse(5, 0, 0);
+      console.log("滑轮向下滚动"); 
+     } 
+    } 
+	else if (e.detail) 
+	{ //Firefox滑轮事件 
+     if (e.detail> 0) 
+	 { //当滑轮向上滚动时 
+ action_mouse(4, 0, 0);
+      console.log("滑轮向上滚动"); 
+     } 
+     if (e.detail< 0) 
+	 { //当滑轮向下滚动时 
+ action_mouse(5, 0, 0);
+      console.log("滑轮向下滚动"); 
+     } 
+    } 
+   }
+
+
 function initMouseMove()
 {
  if(!document.all)
@@ -74,6 +138,7 @@ document.onmousedown = mouseDown;  //注册鼠标按下时事件处理函数
 document.onmouseup = mouseUp;  //注册鼠标松开时事件处理函数
 // p1.onmousemove = this.mouseMove;  //注册鼠标移动时事件处理函数
 document.onclick = mouseClick;  //注册鼠标单击时事件处理函数
+document.onmousewheel = scrollFunc;
  //document.ondblclick = this.mouseMove;  //注册鼠标双击时事件处理函数
 }
 
@@ -94,7 +159,7 @@ async function  mouseMove(e)
 	  x=document.body.scrollLeft+event.clientX;
 	  y=document.body.scrollTop+event.clientY;
 	 }
-	action_mouse(0, x, y, document.body.offsetWidth, document.body.offsetHeight);
+	action_mouse(0, x, y);
 }
 
 // 鼠标移动事件
@@ -112,7 +177,7 @@ async function  mouseClick(e)
 	  x=document.body.scrollLeft+event.clientX;
 	  y=document.body.scrollTop+event.clientY;
 	 }
-	action_mouse(1, x, y, document.body.offsetWidth, document.body.offsetHeight);
+	action_mouse(1, x, y);
 }
 
 
@@ -130,7 +195,7 @@ async function  mouseDown(e)
 	  x=document.body.scrollLeft+event.clientX;
 	  y=document.body.scrollTop+event.clientY;
 	 }
-	action_mouse(2, x, y, document.body.offsetWidth, document.body.offsetHeight);
+	action_mouse(2, x, y);
 }
 
 
@@ -148,18 +213,18 @@ async function  mouseUp(e)
 	  x=document.body.scrollLeft+event.clientX;
 	  y=document.body.scrollTop+event.clientY;
 	 }
-	action_mouse(3, x, y, document.body.offsetWidth, document.body.offsetHeight);
+	action_mouse(3, x, y);
 }
 
-async function action_mouse(action, wight, height, windowwidth, windowheight)
+async function action_mouse(action, wight, height)
 {
 	 var move_xy =
 	 {
 		 "event" : action,
 		 "wight" : wight,
 		 "height": height,
-		 "windowwidth" : windowwidth,
-		 "windowheight" : windowheight
+		 "windowwidth" : window.screen.width,
+		 "windowheight" : window.screen.height
 	 };
 	// var postion = 'x = ' + x + ', y = ' + y +', wight = '+	 document.body.offsetWidth  + ', height = ' + document.body.offsetHeight;
 	 console.log(JSON.stringify(move_xy));
