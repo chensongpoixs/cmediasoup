@@ -229,9 +229,9 @@ async function action_mouse(action, wight, height)
 	// var postion = 'x = ' + x + ', y = ' + y +', wight = '+	 document.body.offsetWidth  + ', height = ' + document.body.offsetHeight;
 	 console.log(JSON.stringify(move_xy));
 	 //await this.test();
-	 roomClient.sendChatMessage(JSON.stringify(move_xy));
+	 roomClient.sendMoveMessage(JSON.stringify(move_xy));
 	 
-	 logger.debug('sendChatMessage() [text:"%s]', move_xy);
+	 logger.debug('sendMoveMessage() [text:"%s]', move_xy);
 }
 
 async function run()

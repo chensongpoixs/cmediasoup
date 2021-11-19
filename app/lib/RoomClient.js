@@ -1911,6 +1911,36 @@ export default class RoomClient
 				}));
 		}
 	}
+	async sendMoveMessage(text)
+	{
+		logger.debug('sendMoveMessage() [text:"%s]', text);
+
+		if (!this._chatDataProducer)
+		{
+			/*store.dispatch(requestActions.notify(
+				{
+					type : 'error',
+					text : 'No chat DataProducer'
+				}));
+*/
+			return;
+		}
+
+		try
+		{
+			this._chatDataProducer.send(text);
+		}
+		catch (error)
+		{
+			logger.error('chat DataProducer.send() failed:%o', error);
+
+			store.dispatch(requestActions.notify(
+				{
+					type : 'error',
+					text : `chat DataProducer.send() failed: ${error}`
+				}));
+		}
+	}
 	
 /*	mouseMove(e)
 	{
