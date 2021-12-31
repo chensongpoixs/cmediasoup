@@ -512,11 +512,11 @@ async function runHttpsServer()
 	
 	
 	// 
-	
+	logger.info('running an HTTP server...');
 	httpServer = http.createServer(expressApp);
 	await new Promise((resolve) =>
 	{
-		httpServer.listen(8888, '0.0.0.0', resolve);
+		httpServer.listen(config.http.listenPort, config.http.listenIp, resolve);
 	});
 }
 
@@ -548,7 +548,7 @@ async function runProtooWebSocketServer()
 	
 	protoowsWebSocketServer.on('connectionrequest', (info, accept, reject) =>
 	{
-		logger.debug('wsconnectionrequest = ' + info.request.url);
+		logger.info('wsconnectionrequest = ' + info.request.url);
 		// The client indicates the roomId and peerId in the URL query.
 		const u = url.parse(info.request.url, true);
 		const roomId = u.query['roomId'];
