@@ -145,6 +145,7 @@ namespace RTC
 			{
 				if (enableUdp)
 				{
+					// ICE 优先级    就是 从是先开始连接
 					uint16_t iceLocalPreference =
 					  IceCandidateDefaultLocalPriority - iceLocalPreferenceDecrement;
 
@@ -198,7 +199,9 @@ namespace RTC
 				iceLocalPreferenceDecrement += 100;
 			}
 
-			// Create a ICE server.
+			// Create a ICE server.  这边创建ICE 协商    STURN 服务器操作  验证用户合法性   
+			// 1. 验证用户名（16）
+			// 2. 验证密码 （32）
 			this->iceServer = new RTC::IceServer(
 			  this, Utils::Crypto::GetRandomString(16), Utils::Crypto::GetRandomString(32));
 
@@ -456,9 +459,33 @@ namespace RTC
 		{
 			case Channel::ChannelRequest::MethodId::TRANSPORT_CONNECT:
 			{
+				/*data = 
+				{
+					"dtlsParameters":
+					{
+						"fingerprints":
+						[
+							{
+							"algorithm":"sha-256",
+							"value":"42:38:72:B0:0F:AC:5E:C0:F7:62:B0:F8:41:81:A9:A8:EC:AD:0D:8D:AF:35:A8:DF:3A:50:BA:43:25:F8:74:C6"
+							}
+						],
+						"role":"client"
+					}
+				}
+
+				internal = {
+					"routerId":"5bd717af-b754-48f5-bd21-2a0321815863",
+					"transportId":"c2499ff3-b11e-4ad2-823a-c8934dbbe672"
+				}
+
+				*/
+
 				// Ensure this method is not called twice.
 				if (this->connectCalled)
+				{
 					MS_THROW_ERROR("connect() already called");
+				}
 
 				RTC::DtlsTransport::Fingerprint dtlsRemoteFingerprint;
 				RTC::DtlsTransport::Role dtlsRemoteRole;
@@ -564,7 +591,7 @@ namespace RTC
 
 				// Tell the caller about the selected local DTLS role.
 				json data = json::object();
-
+				// 角色  
 				switch (this->dtlsRole)
 				{
 					case RTC::DtlsTransport::Role::CLIENT:
@@ -586,6 +613,7 @@ namespace RTC
 
 			case Channel::ChannelRequest::MethodId::TRANSPORT_RESTART_ICE:
 			{
+				// TODO@chensong 2022-04-17  从新启动ICE服务  ->  生成新的用户和密码
 				std::string usernameFragment = Utils::Crypto::GetRandomString(16);
 				std::string password         = Utils::Crypto::GetRandomString(32);
 
@@ -900,7 +928,7 @@ namespace RTC
 		// Check if it's DTLS.
 		else if (RTC::DtlsTransport::IsDtls(data, len))
 		{
-			DEBUG_EX_LOG("IsDtls");
+			DEBUG_EX_LOG("IsDtls"); // 这边修改DTLS的状态的哈 ？？
 			OnDtlsDataReceived(tuple, data, len);
 		}
 		else
@@ -952,7 +980,7 @@ namespace RTC
 		  this->dtlsTransport->GetState() == RTC::DtlsTransport::DtlsState::CONNECTED)
 		{
 			MS_DEBUG_DEV("DTLS data received, passing it to the DTLS transport");
-
+			// 这边修改dtls 连接状态 了
 			this->dtlsTransport->ProcessDtlsData(data, len);
 		}
 		else
