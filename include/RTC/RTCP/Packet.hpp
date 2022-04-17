@@ -1,4 +1,4 @@
-#ifndef MS_RTC_RTCP_PACKET_HPP
+﻿#ifndef MS_RTC_RTCP_PACKET_HPP
 #define MS_RTC_RTCP_PACKET_HPP
 
 #include "common.hpp"
@@ -67,6 +67,7 @@ namespace RTC
 				);
 				// clang-format on
 			}
+			// RTCP INFO 数据分析 网络评估 的数据的
 			static Packet* Parse(const uint8_t* data, size_t len);
 			static const std::string& Type2String(Type type);
 

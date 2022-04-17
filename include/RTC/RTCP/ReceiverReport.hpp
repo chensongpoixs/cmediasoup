@@ -1,4 +1,4 @@
-#ifndef MS_RTC_RTCP_RECEIVER_REPORT_HPP
+﻿#ifndef MS_RTC_RTCP_RECEIVER_REPORT_HPP
 #define MS_RTC_RTCP_RECEIVER_REPORT_HPP
 
 #include "common.hpp"
@@ -16,13 +16,13 @@ namespace RTC
 			/* Struct for RTCP receiver report. */
 			struct Header
 			{
-				uint32_t ssrc;
-				uint32_t fractionLost : 8;
-				uint32_t totalLost : 24;
-				uint32_t lastSeq;
-				uint32_t jitter;
-				uint32_t lsr;
-				uint32_t dlsr;
+				uint32_t ssrc;//32位，接收到的每个媒体源
+				uint32_t fractionLost : 8;//8位，上一次报告之后从SSRC_n来包的漏包比列
+				uint32_t totalLost : 24;//24位，自接收开始漏包总数，迟到包不算漏包，重传有可以导致负数
+				uint32_t lastSeq; //--? 低16位表式收到的最大seq，高16位表式seq循环次数 
+				uint32_t jitter;//RTP包到达时间间隔的统计方差
+				uint32_t lsr;//32位， NTP时间戳的中间32位
+				uint32_t dlsr;//记录接收SR的时间与发送SR的时间差
 			};
 
 		public:
