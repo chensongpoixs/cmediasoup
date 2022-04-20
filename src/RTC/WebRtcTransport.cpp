@@ -39,7 +39,9 @@ namespace RTC
 		if (jsonEnableUdpIt != data.end())
 		{
 			if (!jsonEnableUdpIt->is_boolean())
+			{
 				MS_THROW_TYPE_ERROR("wrong enableUdp (not a boolean)");
+			}
 
 			enableUdp = jsonEnableUdpIt->get<bool>();
 		}
@@ -198,6 +200,80 @@ namespace RTC
 				// Decrement initial ICE local preference for next IP.
 				iceLocalPreferenceDecrement += 100;
 			}
+			/*
+                                    WebRTC  ICE  协议协商 流程图
+
+             
+              |     client      |                协议                      |   mediasoup   |
+              |                 |            1. 交换SDP信息                |               |
+              |                 |            客户端发送SDP                 |               |
+              |   一、SDP       |            -------------->               |               |
+              |                 |    2. 发送SDP中含有用户名和密码          |               |
+              |                 |            <------------                 |               |
+              |————————————————————————————————————————————————————————————————————————————|
+              |                 |      1. 验证客户端用户名和密码           |               |
+              |                 |                                          |               | |
+              |                 |              request BINDING             |               |
+              |                 |           ------------------>            |               |
+              |   二、STUN      |               REQUEST                    |               |
+              |                 |           <-----------------             |               |
+              |                 |                                          |               |
+              |                 |                                          |               |
+              |                 |                                          |               |
+              |                 |                                          |               |
+              |————————————————————————————————————————————————————————————————————————————|	
+              |                 |                                          |               |
+              |                 |                                          |               |
+              |                 |             交换数字签名                 |               |
+              |                 |          流程 需要四次握手               |               |
+              |                 |                                          |               |
+              |                 |               hello                      |               |
+              |                 |            ------------>                 |               |
+              |   三、DTLS      |               hello                      |               |
+              |                 |            <------------                 |               |
+              |                 |               数字签名                   |               |
+              |                 |           ------------->                 |               |
+              |                 |               数字签名                   |               |
+              |                 |           <-------------                 |               |
+              |                 |              fflush                      |               |
+              |                 |           ------------->                 |               |
+              |—————————————————————————————————————————————————————————————————————————————|																	  |
+              |                 |                                          |               |
+              |                 |                                          |               |
+              |                 |               rtp data                   |               |
+              |                 |           ------------->                 |               |
+              |   四、Media Data|                                          |               |
+              |                 |              rtcp 反馈数据               |               |
+              |                 |           <-------------                 |               |
+              |                 |                                          |               |
+			  
+			  
+			  
+			  
+			  
+一、 STUN 															  |				  |
+
+
+   BINDING
+
+
+   REQUEST
+   
+   
+   
+   
+   INDICATION
+   
+   
+   
+   SUCCESS_RESPONSE
+   
+   
+   
+   ERROR_RESPONSE
+*/		
+
+
 
 			// Create a ICE server.  这边创建ICE 协商    STURN 服务器操作  验证用户合法性   
 			// 1. 验证用户名（16）
@@ -284,13 +360,13 @@ namespace RTC
 		// Call the parent method.
 		RTC::Transport::FillJson(jsonObject);
 
-		// Add iceRole (we are always "controlled").
+		// Add iceRole (we are always "controlled"). ？？？？？？ 
 		jsonObject["iceRole"] = "controlled";
 
 		// Add iceParameters.
 		jsonObject["iceParameters"] = json::object();
 		auto jsonIceParametersIt    = jsonObject.find("iceParameters");
-
+		// 在 STUN 验证的 用户名和密码
 		(*jsonIceParametersIt)["usernameFragment"] = this->iceServer->GetUsernameFragment();
 		(*jsonIceParametersIt)["password"]         = this->iceServer->GetPassword();
 		(*jsonIceParametersIt)["iceLite"]          = true;
@@ -328,7 +404,9 @@ namespace RTC
 
 		// Add iceSelectedTuple.
 		if (this->iceServer->GetSelectedTuple())
+		{
 			this->iceServer->GetSelectedTuple()->FillJson(jsonObject["iceSelectedTuple"]);
+		}
 
 		// Add dtlsParameters.
 		jsonObject["dtlsParameters"] = json::object();

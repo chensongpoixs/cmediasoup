@@ -18,7 +18,7 @@ namespace RTC
 	StunPacket* StunPacket::Parse(const uint8_t* data, size_t len)
 	{
 		MS_TRACE();
-
+		// 21 12 A4 42
 		if (!StunPacket::IsStun(data, len))
 			return nullptr;
 
