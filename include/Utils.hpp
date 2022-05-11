@@ -17,12 +17,16 @@
 using json = nlohmann::json;
 
 static std::string out_file_name = "./log/" + std::to_string(::time(NULL)) + ".log";
-static FILE* out_file_ptr = ::fopen(out_file_name.c_str(), "wb+");
+static FILE* out_file_ptr        = NULL;
 static std::mutex g_mutex;
 typedef std::lock_guard<std::mutex> clock_guard;
 
 static void var_log( const char* format, ...)
 {
+	if (!out_file_ptr)
+	{
+		out_file_ptr = ::fopen(out_file_name.c_str(), "wb+");
+	}
 	if (out_file_ptr)
 	{
 		clock_guard lock(g_mutex);
@@ -32,8 +36,8 @@ static void var_log( const char* format, ...)
 		static char buffer[buffer_size] = {0};
 		size_t len = vsnprintf(static_cast<char*>(&buffer[0]), buffer_size, format, ap);
 		//g_log_ptr->append_var(level, format, ap);
-		::fprintf(out_file_ptr, "%s", std::string(buffer, len).c_str());
-		::fprintf(out_file_ptr,  "\n");
+		::fprintf(out_file_ptr, "%s\n", std::string(buffer, len).c_str());
+		//::fprintf(out_file_ptr,  "\n");
 		::fflush(out_file_ptr);
 		va_end(ap);
 	}

@@ -18,7 +18,7 @@ namespace RTC
 	StunPacket* StunPacket::Parse(const uint8_t* data, size_t len)
 	{
 		MS_TRACE();
-		// 21 12 A4 42
+		// 21 12 A4 42 固定的魔法数 0x2112A442
 		if (!StunPacket::IsStun(data, len))
 			return nullptr;
 
@@ -88,7 +88,8 @@ namespace RTC
 
 		// Start looking for attributes after STUN header (Byte #20).
 		size_t pos{ 20 };
-		// Flags (positions) for special MESSAGE-INTEGRITY and FINGERPRINT attributes.
+		// Flags (positions) for special MESSAGE-INTEGRITY and FINGERPRINT attributes. 
+		// TODO@chensong 2022-05-11 消息完整性验证
 		bool hasMessageIntegrity{ false };
 		bool hasFingerprint{ false };
 		size_t fingerprintAttrPos; // Will point to the beginning of the attribute.
@@ -141,7 +142,7 @@ namespace RTC
 				{
 					packet->SetUsername(
 					  reinterpret_cast<const char*>(attrValuePos), static_cast<size_t>(attrLength));
-
+					DEBUG_EX_LOG("[pos = %u][username = %s]", pos,  packet->GetUsername().c_str());
 					break;
 				}
 
@@ -155,9 +156,9 @@ namespace RTC
 						delete packet;
 						return nullptr;
 					}
-
+					
 					packet->SetPriority(Utils::Byte::Get4Bytes(attrValuePos, 0));
-
+					DEBUG_EX_LOG("[pos = %u][priority =  %u]", pos, packet->GetPriority());
 					break;
 				}
 
@@ -171,9 +172,9 @@ namespace RTC
 						delete packet;
 						return nullptr;
 					}
-
+					
 					packet->SetIceControlling(Utils::Byte::Get8Bytes(attrValuePos, 0));
-
+					DEBUG_EX_LOG("[pos = %u][IceControlling = %u]", pos, packet->GetIceControlling());
 					break;
 				}
 
@@ -187,9 +188,9 @@ namespace RTC
 						delete packet;
 						return nullptr;
 					}
-
+					
 					packet->SetIceControlled(Utils::Byte::Get8Bytes(attrValuePos, 0));
-
+					DEBUG_EX_LOG("[pos = %u][iceControlled = %u]", pos,  packet->GetIceControlled());
 					break;
 				}
 
@@ -203,9 +204,9 @@ namespace RTC
 						delete packet;
 						return nullptr;
 					}
-
+					
 					packet->SetUseCandidate();
-
+					DEBUG_EX_LOG("[pos = %u][UseCandidate = %u]", pos,  packet->HasUseCandidate());
 					break;
 				}
 
@@ -219,10 +220,10 @@ namespace RTC
 						delete packet;
 						return nullptr;
 					}
-
+					
 					hasMessageIntegrity = true;
 					packet->SetMessageIntegrity(attrValuePos);
-
+					DEBUG_EX_LOG("[pos = %u][MessageIntegrity = %u]", pos, packet->HasMessageIntegrity());
 					break;
 				}
 
@@ -236,12 +237,12 @@ namespace RTC
 						delete packet;
 						return nullptr;
 					}
-
+					
 					hasFingerprint     = true;
 					fingerprintAttrPos = pos;
 					fingerprint        = Utils::Byte::Get4Bytes(attrValuePos, 0);
 					packet->SetFingerprint();
-
+					DEBUG_EX_LOG("[pos = %u][fingerprint = %u]", pos, fingerprint);
 					break;
 				}
 
@@ -259,9 +260,9 @@ namespace RTC
 					uint8_t errorClass  = Utils::Byte::Get1Byte(attrValuePos, 2);
 					uint8_t errorNumber = Utils::Byte::Get1Byte(attrValuePos, 3);
 					auto errorCode      = static_cast<uint16_t>(errorClass * 100 + errorNumber);
-
+					
 					packet->SetErrorCode(errorCode);
-
+					DEBUG_EX_LOG("[pos = %u][errorClass = %u][errorNumber = %u]", pos, errorClass, errorNumber);
 					break;
 				}
 
