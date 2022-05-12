@@ -1,4 +1,4 @@
-#define MS_CLASS "RTC::Router"
+﻿#define MS_CLASS "RTC::Router"
 // #define MS_LOG_DEV_LEVEL 3
 
 #include "RTC/Router.hpp"
@@ -185,10 +185,10 @@ namespace RTC
 				// This may throw.
 				SetNewTransportIdFromInternal(request->internal, transportId);
 
-				// This may throw.
+				// This may throw. 这个做了非常多的事情
 				auto* webRtcTransport = new RTC::WebRtcTransport(transportId, this, request->data);
 
-				// Insert into the map.
+				// Insert into the map. 
 				this->mapTransports[transportId] = webRtcTransport;
 
 				MS_DEBUG_DEV("WebRtcTransport created [transportId:%s]", transportId.c_str());

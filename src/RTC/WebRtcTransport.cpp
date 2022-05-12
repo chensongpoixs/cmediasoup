@@ -1,4 +1,4 @@
-#define MS_CLASS "RTC::WebRtcTransport"
+﻿#define MS_CLASS "RTC::WebRtcTransport"
 // #define MS_LOG_DEV_LEVEL 3
 
 #include "RTC/WebRtcTransport.hpp"
@@ -39,7 +39,9 @@ namespace RTC
 		if (jsonEnableUdpIt != data.end())
 		{
 			if (!jsonEnableUdpIt->is_boolean())
+			{
 				MS_THROW_TYPE_ERROR("wrong enableUdp (not a boolean)");
+			}
 
 			enableUdp = jsonEnableUdpIt->get<bool>();
 		}
@@ -145,6 +147,7 @@ namespace RTC
 			{
 				if (enableUdp)
 				{
+					// ICE 优先级    就是 从是先开始连接
 					uint16_t iceLocalPreference =
 					  IceCandidateDefaultLocalPriority - iceLocalPreferenceDecrement;
 
@@ -155,10 +158,15 @@ namespace RTC
 
 					// This may throw.
 					RTC::UdpSocket* udpSocket;
+					// TODO@chensong 这边port 是使用同一个端口吗？？？
 					if (port != 0)
+					{
 						udpSocket = new RTC::UdpSocket(this, listenIp.ip, port);
+					}
 					else
+					{
 						udpSocket = new RTC::UdpSocket(this, listenIp.ip);
+					}
 
 					this->udpSockets[udpSocket] = listenIp.announcedIp;
 
@@ -196,8 +204,84 @@ namespace RTC
 				// Decrement initial ICE local preference for next IP.
 				iceLocalPreferenceDecrement += 100;
 			}
+			/*
+                                    WebRTC  ICE  协议协商 流程图
 
-			// Create a ICE server.
+             
+              |     client      |                协议                      |   mediasoup   |
+              |                 |            1. 交换SDP信息                |               |
+              |                 |            客户端发送SDP                 |               |
+              |   一、SDP       |            -------------->               |               |
+              |                 |    2. 发送SDP中含有用户名和密码          |               |
+              |                 |            <------------                 |               |
+              |————————————————————————————————————————————————————————————————————————————|
+              |                 |      1. 验证客户端用户名和密码           |               |
+              |                 |                                          |               | |
+              |                 |              request BINDING             |               |
+              |                 |           ------------------>            |               |
+              |   二、STUN      |               REQUEST                    |               |
+              |                 |           <-----------------             |               |
+              |                 |                                          |               |
+              |                 |                                          |               |
+              |                 |                                          |               |
+              |                 |                                          |               |
+              |————————————————————————————————————————————————————————————————————————————|	
+              |                 |                                          |               |
+              |                 |                                          |               |
+              |                 |             交换数字签名                 |               |
+              |                 |          流程 需要四次握手               |               |
+              |                 |                                          |               |
+              |                 |               hello                      |               |
+              |                 |            ------------>                 |               |
+              |   三、DTLS      |               hello                      |               |
+              |                 |            <------------                 |               |
+              |                 |               数字签名                   |               |
+              |                 |           ------------->                 |               |
+              |                 |               数字签名                   |               |
+              |                 |           <-------------                 |               |
+              |                 |              fflush                      |               |
+              |                 |           ------------->                 |               |
+              |—————————————————————————————————————————————————————————————————————————————|																	  |
+              |                 |                                          |               |
+              |                 |                                          |               |
+              |                 |               rtp data                   |               |
+              |                 |           ------------->                 |               |
+              |   四、Media Data|                                          |               |
+              |                 |              rtcp 反馈数据               |               |
+              |                 |           <-------------                 |               |
+              |                 |                                          |               |
+			  
+			  
+			  
+			  
+			  
+一、 STUN 															  |				  |
+
+
+   BINDING
+
+
+   REQUEST
+   
+   
+   
+   
+   INDICATION
+   
+   
+   
+   SUCCESS_RESPONSE
+   
+   
+   
+   ERROR_RESPONSE
+*/		
+
+
+
+			// Create a ICE server.  这边创建ICE 协商    STURN 服务器操作  验证用户合法性   
+			// 1. 验证用户名（16）
+			// 2. 验证密码 （32）
 			this->iceServer = new RTC::IceServer(
 			  this, Utils::Crypto::GetRandomString(16), Utils::Crypto::GetRandomString(32));
 
@@ -280,13 +364,13 @@ namespace RTC
 		// Call the parent method.
 		RTC::Transport::FillJson(jsonObject);
 
-		// Add iceRole (we are always "controlled").
+		// Add iceRole (we are always "controlled"). ？？？？？？ 
 		jsonObject["iceRole"] = "controlled";
 
 		// Add iceParameters.
 		jsonObject["iceParameters"] = json::object();
 		auto jsonIceParametersIt    = jsonObject.find("iceParameters");
-
+		// 在 STUN 验证的 用户名和密码
 		(*jsonIceParametersIt)["usernameFragment"] = this->iceServer->GetUsernameFragment();
 		(*jsonIceParametersIt)["password"]         = this->iceServer->GetPassword();
 		(*jsonIceParametersIt)["iceLite"]          = true;
@@ -324,7 +408,9 @@ namespace RTC
 
 		// Add iceSelectedTuple.
 		if (this->iceServer->GetSelectedTuple())
+		{
 			this->iceServer->GetSelectedTuple()->FillJson(jsonObject["iceSelectedTuple"]);
+		}
 
 		// Add dtlsParameters.
 		jsonObject["dtlsParameters"] = json::object();
@@ -455,9 +541,33 @@ namespace RTC
 		{
 			case Channel::ChannelRequest::MethodId::TRANSPORT_CONNECT:
 			{
+				/*data = 
+				{
+					"dtlsParameters":
+					{
+						"fingerprints":
+						[
+							{
+							"algorithm":"sha-256",
+							"value":"42:38:72:B0:0F:AC:5E:C0:F7:62:B0:F8:41:81:A9:A8:EC:AD:0D:8D:AF:35:A8:DF:3A:50:BA:43:25:F8:74:C6"
+							}
+						],
+						"role":"client"
+					}
+				}
+
+				internal = {
+					"routerId":"5bd717af-b754-48f5-bd21-2a0321815863",
+					"transportId":"c2499ff3-b11e-4ad2-823a-c8934dbbe672"
+				}
+
+				*/
+
 				// Ensure this method is not called twice.
 				if (this->connectCalled)
+				{
 					MS_THROW_ERROR("connect() already called");
+				}
 
 				RTC::DtlsTransport::Fingerprint dtlsRemoteFingerprint;
 				RTC::DtlsTransport::Role dtlsRemoteRole;
@@ -563,7 +673,7 @@ namespace RTC
 
 				// Tell the caller about the selected local DTLS role.
 				json data = json::object();
-
+				// 角色  
 				switch (this->dtlsRole)
 				{
 					case RTC::DtlsTransport::Role::CLIENT:
@@ -585,6 +695,7 @@ namespace RTC
 
 			case Channel::ChannelRequest::MethodId::TRANSPORT_RESTART_ICE:
 			{
+				// TODO@chensong 2022-04-17  从新启动ICE服务  ->  生成新的用户和密码
 				std::string usernameFragment = Utils::Crypto::GetRandomString(16);
 				std::string password         = Utils::Crypto::GetRandomString(32);
 
@@ -869,7 +980,7 @@ namespace RTC
 			this->srtpSendSession->RemoveStream(ssrc);
 		}
 	}
-
+	// TODO@chensong 处理底层协议 RTCP/RTP/STUN/ICE
 	inline void WebRtcTransport::OnPacketReceived(
 	  RTC::TransportTuple* tuple, const uint8_t* data, size_t len)
 	{
@@ -899,7 +1010,11 @@ namespace RTC
 		// Check if it's DTLS.
 		else if (RTC::DtlsTransport::IsDtls(data, len))
 		{
-			DEBUG_EX_LOG("IsDtls");
+//<<<<<<< HEAD
+//			DEBUG_EX_LOG("IsDtls");
+//=======
+			DEBUG_EX_LOG("IsDtls"); // 这边修改DTLS的状态的哈 ？？
+//>>>>>>> 69463cce016535ae4b8531ff725a35bc270954e5
 			OnDtlsDataReceived(tuple, data, len);
 		}
 		else
@@ -951,7 +1066,7 @@ namespace RTC
 		  this->dtlsTransport->GetState() == RTC::DtlsTransport::DtlsState::CONNECTED)
 		{
 			MS_DEBUG_DEV("DTLS data received, passing it to the DTLS transport");
-
+			// 这边修改dtls 连接状态 了
 			this->dtlsTransport->ProcessDtlsData(data, len);
 		}
 		else
@@ -1076,7 +1191,7 @@ namespace RTC
 		// Pass the packet to the parent transport.
 		RTC::Transport::ReceiveRtcpPacket(packet);
 	}
-
+	//TODO@chensong 2022-04-17 底层发送到上层 
 	inline void WebRtcTransport::OnUdpSocketPacketReceived(
 	  RTC::UdpSocket* socket, const uint8_t* data, size_t len, const struct sockaddr* remoteAddr)
 	{
