@@ -118,6 +118,10 @@ namespace RTC
 		// Set mimeType.
 		this->mimeType = RtpCodecMimeType::type2String[this->type] + "/" +
 		                 RtpCodecMimeType::subtype2String[this->subtype];
+		//if ("opus" == subtype) // audio webrtc bug  opus 2 channel 
+		//{
+		//	this->mimeType += "/" + std::to_string(2);
+		//}
 	}
 
 	void RtpCodecMimeType::UpdateMimeType()

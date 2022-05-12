@@ -1,4 +1,4 @@
-#define MS_CLASS "RTC::DirectTransport"
+﻿#define MS_CLASS "RTC::DirectTransport"
 // #define MS_LOG_DEV_LEVEL 3
 
 #include "RTC/DirectTransport.hpp"
@@ -17,6 +17,8 @@ namespace RTC
 		MS_TRACE();
 	}
 
+
+ 
 	DirectTransport::~DirectTransport()
 	{
 		MS_TRACE();
