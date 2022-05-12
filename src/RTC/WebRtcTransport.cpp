@@ -160,9 +160,13 @@ namespace RTC
 					RTC::UdpSocket* udpSocket;
 					// TODO@chensong 这边port 是使用同一个端口吗？？？
 					if (port != 0)
+					{
 						udpSocket = new RTC::UdpSocket(this, listenIp.ip, port);
+					}
 					else
+					{
 						udpSocket = new RTC::UdpSocket(this, listenIp.ip);
+					}
 
 					this->udpSockets[udpSocket] = listenIp.announcedIp;
 
