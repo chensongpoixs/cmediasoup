@@ -12,9 +12,9 @@ namespace RTC
 	class RateCalculator
 	{
 	public:
-		static constexpr size_t DefaultWindowSize{ 1000u };
-		static constexpr float DefaultBpsScale{ 8000.0f };
-		static constexpr uint16_t DefaultWindowItems{ 100u };
+		static constexpr size_t DefaultWindowSize{ 1000u };   // 默认滑动窗口占有毫秒数
+		static constexpr float DefaultBpsScale{ 8000.0f };    // 比特流
+		static constexpr uint16_t DefaultWindowItems{ 100u }; // 滑动窗口有多少个
 
 	public:
 		RateCalculator(
@@ -57,25 +57,25 @@ namespace RTC
 
 	private:
 		// Window Size (in milliseconds).
-		size_t windowSizeMs{ DefaultWindowSize };
+		size_t windowSizeMs{ DefaultWindowSize }; // 滑动窗口的大小毫秒数
 		// Scale in which the rate is represented.
-		float scale{ DefaultBpsScale };
+		float scale{ DefaultBpsScale }; // 表示比率的刻度。
 		// Window Size (number of items).
-		uint16_t windowItems{ DefaultWindowItems };
+		uint16_t windowItems{ DefaultWindowItems }; // 滑动窗口的数组个数
 		// Item Size (in milliseconds), calculated as: windowSizeMs / windowItems.
-		size_t itemSizeMs{ 0u };
+		size_t itemSizeMs{ 0u }; // 每个滑动窗口占有毫秒数
 		// Buffer to keep data.
-		std::unique_ptr<BufferItem[]> buffer;
+		std::unique_ptr<BufferItem[]> buffer; // 滑动窗口的数组记录数据集
 		// Time (in milliseconds) for last item in the time window.
-		uint64_t newestItemStartTime{ 0u };
+		uint64_t newestItemStartTime{ 0u }; // 当前最新窗口的时间毫秒数
 		// Index for the last item in the time window.
-		int32_t newestItemIndex{ -1 };
+		int32_t newestItemIndex{ -1 }; // 最新的窗口的下标
 		// Time (in milliseconds) for oldest item in the time window.
-		uint64_t oldestItemStartTime{ 0u };
+		uint64_t oldestItemStartTime{ 0u }; // 总是记录滑动窗口中最小毫秒数
 		// Index for the oldest item in the time window.
-		int32_t oldestItemIndex{ -1 };
+		int32_t oldestItemIndex{ -1 }; // 最老的下标
 		// Total count in the time window.
-		size_t totalCount{ 0u };
+		size_t totalCount{ 0u }; // 数据同和当前
 		// Total bytes transmitted.
 		size_t bytes{ 0u };
 		// Last value calculated by GetRate().
