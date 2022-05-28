@@ -94,6 +94,7 @@ namespace RTC
 
 			while ((count-- != 0u) && (len > offset))
 			{
+				// RR的反馈信息
 				ReceiverReport* report = ReceiverReport::Parse(data + offset, len - offset);
 
 				if (report != nullptr)

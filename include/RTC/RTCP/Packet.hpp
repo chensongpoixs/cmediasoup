@@ -36,16 +36,16 @@ namespace RTC
 			struct CommonHeader
 			{
 #if defined(MS_LITTLE_ENDIAN)
-				uint8_t count : 5;
-				uint8_t padding : 1;
+				uint8_t count : 5;  // 一个包中Report Block个数
+				uint8_t padding : 1;// 填充标识， 最后一个填充字节是（）个数
 				uint8_t version : 2;
 #elif defined(MS_BIG_ENDIAN)
 				uint8_t version : 2;
 				uint8_t padding : 1;
 				uint8_t count : 5;
 #endif
-				uint8_t packetType : 8;
-				uint16_t length : 16;
+				uint8_t packetType : 8; // 不同RTCP包的类型
+				uint16_t length : 16;   // 16位，包长度（包括头）。[数值为（N-1）个4字节]
 			};
 
 		public:

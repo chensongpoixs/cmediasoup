@@ -43,6 +43,7 @@ inline static int onSslCertificateVerify(int /*preverifyOk*/, X509_STORE_CTX* /*
 
 inline static void onSslInfo(const SSL* ssl, int where, int ret)
 {
+	DEBUG_EX_LOG("[where = %d][ret = %d]", where, ret);
 	static_cast<RTC::DtlsTransport*>(SSL_get_ex_data(ssl, 0))->OnSslInfo(where, ret);
 }
 

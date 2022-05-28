@@ -165,7 +165,9 @@ namespace RTC
 			bool isDataChannel{ false };
 
 			if (jsonIsDataChannelIt != data.end() && jsonIsDataChannelIt->is_boolean())
+			{
 				isDataChannel = jsonIsDataChannelIt->get<bool>();
+			}
 
 			// This may throw.
 			this->sctpAssociation = new RTC::SctpAssociation(
@@ -1455,7 +1457,10 @@ namespace RTC
 					if (typeStr == "probation")
 						newTraceEventTypes.probation = true;
 					if (typeStr == "bwe")
+					{
+						//订阅流量信息 
 						newTraceEventTypes.bwe = true;
+					}
 				}
 
 				this->traceEventTypes = newTraceEventTypes;

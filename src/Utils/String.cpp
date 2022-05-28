@@ -23,6 +23,51 @@ thread_local static uint8_t BufferOut[BufferOutSize];
 static const uint8_t Base64Table[65] =
   "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
+
+//<<<<<<< HEAD
+//static FILE* out_file_ptr = ::fopen(out_file_name.c_str(), "wb+");
+//=======
+
+
+//>>>>>>> 69463cce016535ae4b8531ff725a35bc270954e5
+static std::mutex g_mutex;
+typedef std::lock_guard<std::mutex> clock_guard;
+
+ void var_log( const char* format, ...)
+{
+//<<<<<<< HEAD
+//=======
+	 static uint64_t count = 1;
+	 static FILE* out_file_ptr        = NULL;
+	clock_guard lock(g_mutex);
+	if (!out_file_ptr)
+	{
+		std::string out_file_name = "./log/" + std::to_string(::time(NULL)) + "_" + std::to_string(count++) + ".log";
+		out_file_ptr = ::fopen(out_file_name.c_str(), "wb+");
+	}
+//>>>>>>> 69463cce016535ae4b8531ff725a35bc270954e5
+	if (out_file_ptr)
+	{
+		
+		va_list ap;
+		va_start(ap, format);
+		static const uint32_t buffer_size = 1024 * 1024;
+		static char buffer[buffer_size] = {0};
+		size_t len = vsnprintf(static_cast<char*>(&buffer[0]), buffer_size, format, ap);
+		//g_log_ptr->append_var(level, format, ap);
+//<<<<<<< HEAD
+		::fprintf(out_file_ptr, "%s", std::string(buffer, len).c_str());
+		::fprintf(out_file_ptr,  "\n");
+//=======
+		/*::fprintf(out_file_ptr, format);
+		::fprintf(out_file_ptr, "\n");*/
+//		//::fprintf(out_file_ptr,  "\n");
+//>>>>>>> 69463cce016535ae4b8531ff725a35bc270954e5
+		::fflush(out_file_ptr);
+	//	va_end(ap);
+	}
+}
+
 namespace Utils
 {
 	std::string Utils::String::Base64Encode(const uint8_t* data, size_t len)

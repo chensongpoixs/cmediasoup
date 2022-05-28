@@ -758,7 +758,9 @@ namespace RTC
 		// Do nothing if we have the same local DTLS role as the DTLS transport.
 		// NOTE: local role in DTLS transport can be NONE, but not ours.
 		if (this->dtlsTransport->GetLocalRole() == this->dtlsRole)
+		{
 			return;
+		}
 
 		// Check our local DTLS role.
 		switch (this->dtlsRole)
@@ -992,19 +994,19 @@ namespace RTC
 		// Check if it's STUN.
 		if (RTC::StunPacket::IsStun(data, len))
 		{
-			DEBUG_EX_LOG("stun");
+			DEBUG_EX_ID_LOG("stun");
 			OnStunDataReceived(tuple, data, len);
 		}
 		// Check if it's RTCP.
 		else if (RTC::RTCP::Packet::IsRtcp(data, len))
 		{
-			DEBUG_EX_LOG("IsRtcp");
+			DEBUG_EX_ID_LOG("IsRtcp");
 			OnRtcpDataReceived(tuple, data, len);
 		}
 		// Check if it's RTP.
 		else if (RTC::RtpPacket::IsRtp(data, len))
 		{
-			DEBUG_EX_LOG("IsRtp");
+			DEBUG_EX_ID_LOG("IsRtp");
 			OnRtpDataReceived(tuple, data, len);
 		}
 		// Check if it's DTLS.
@@ -1013,13 +1015,13 @@ namespace RTC
 //<<<<<<< HEAD
 //			DEBUG_EX_LOG("IsDtls");
 //=======
-			DEBUG_EX_LOG("IsDtls"); // 这边修改DTLS的状态的哈 ？？
+			DEBUG_EX_ID_LOG("IsDtls"); // 这边修改DTLS的状态的哈 ？？
 //>>>>>>> 69463cce016535ae4b8531ff725a35bc270954e5
 			OnDtlsDataReceived(tuple, data, len);
 		}
 		else
 		{
-			DEBUG_EX_LOG("error type");
+			DEBUG_EX_ID_LOG("error type");
 			MS_WARN_DEV("ignoring received packet of unknown type");
 		}
 	}
@@ -1037,7 +1039,7 @@ namespace RTC
 
 			return;
 		}
-
+		DEBUG_EX_ID_LOG("[]");
 		// Pass it to the IceServer.
 		this->iceServer->ProcessStunPacket(packet, tuple);
 
@@ -1437,7 +1439,10 @@ namespace RTC
 
 			return;
 		}
-		DEBUG_EX_LOG("len = %lu", len);
+		DEBUG_EX_LOG("len = %lu", len); 
+
+		// TODO@chensong 20220522     
+		//TLSv1.3 发送 Server Hello、 Certificate、Certificate Status、 Server key Exchange、 Server Hello Done
 		this->iceServer->GetSelectedTuple()->Send(data, len);
 
 		// Increase send transmission.

@@ -15,12 +15,12 @@ namespace RTC
 			/* Struct for RTCP sender report. */
 			struct Header
 			{
-				uint32_t ssrc;
-				uint32_t ntpSec;
+				uint32_t ssrc;          // 源
+				uint32_t ntpSec;        // 网络时间戳， 用于不同源之间的同步 
 				uint32_t ntpFrac;
-				uint32_t rtpTs;
-				uint32_t packetCount;
-				uint32_t octetCount;
+				uint32_t rtpTs;        // 相于时间戳，于RTP包时间戳一致
+				uint32_t packetCount;  //总发送包数
+				uint32_t octetCount;  // 总发送的数据量
 			};
 
 		public:

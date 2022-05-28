@@ -271,7 +271,7 @@ namespace RTC
 
 	private:
 		// Passed by argument.
-		Listener* listener{ nullptr };
+		Listener* listener{ nullptr }; // Router
 		// Allocated by this.
 		std::unordered_map<std::string, RTC::Producer*> mapProducers;
 		std::unordered_map<std::string, RTC::Consumer*> mapConsumers;

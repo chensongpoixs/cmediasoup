@@ -160,8 +160,9 @@ namespace RTC
 		uint32_t compactNtp = (ntp.seconds & 0x0000FFFF) << 16;
 
 		compactNtp |= (ntp.fractions & 0xFFFF0000) >> 16;
-
+		// NTP时间戳的中间32位
 		uint32_t lastSr = report->GetLastSenderReport();
+		// 记录接收SR的时间与发送SR的时间差
 		uint32_t dlsr   = report->GetDelaySinceLastSenderReport();
 
 		// RTT in 1/2^16 second fractions.
@@ -170,16 +171,21 @@ namespace RTC
 		// If no Sender Report was received by the remote endpoint yet, ignore lastSr
 		// and dlsr values in the Receiver Report.
 		if (lastSr && dlsr && (compactNtp > dlsr + lastSr))
+		{
 			rtt = compactNtp - dlsr - lastSr;
+		}
 
 		// RTT in milliseconds.
 		this->rtt = static_cast<float>(rtt >> 16) * 1000;
 		this->rtt += (static_cast<float>(rtt & 0x0000FFFF) / 65536) * 1000;
 
 		if (this->rtt > 0.0f)
+		{
 			this->hasRtt = true;
-
+		}
+		//自接收开始漏包总数，迟到包不算漏包，重传有可以导致负数
 		this->packetsLost  = report->GetTotalLost();
+		//上一次报告之后从SSRC_n来包的漏包比列
 		this->fractionLost = report->GetFractionLost();
 
 		// Update the score with the received RR.
@@ -577,9 +583,13 @@ namespace RTC
 		uint32_t lost;
 
 		if (totalLost < this->lostPriorScore)
+		{
 			lost = 0;
+		}
 		else
+		{
 			lost = totalLost - this->lostPriorScore;
+		}
 
 		this->lostPriorScore = totalLost;
 
