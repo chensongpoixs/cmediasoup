@@ -160,7 +160,11 @@ namespace RTC
 		uint32_t compactNtp = (ntp.seconds & 0x0000FFFF) << 16;
 
 		compactNtp |= (ntp.fractions & 0xFFFF0000) >> 16;
+//<<<<<<< HEAD
 		// NTP时间戳的中间32位
+//=======
+		//  NTP时间戳的中间32位
+//>>>>>>> 20adb84c0b9b03c2ea608d143e974cef7a4a3e62
 		uint32_t lastSr = report->GetLastSenderReport();
 		// 记录接收SR的时间与发送SR的时间差
 		uint32_t dlsr   = report->GetDelaySinceLastSenderReport();
@@ -183,7 +187,11 @@ namespace RTC
 		{
 			this->hasRtt = true;
 		}
+
 		//自接收开始漏包总数，迟到包不算漏包，重传有可以导致负数
+//=======
+
+//>>>>>>> 20adb84c0b9b03c2ea608d143e974cef7a4a3e62
 		this->packetsLost  = report->GetTotalLost();
 		//上一次报告之后从SSRC_n来包的漏包比列
 		this->fractionLost = report->GetFractionLost();
@@ -590,7 +598,10 @@ namespace RTC
 		{
 			lost = totalLost - this->lostPriorScore;
 		}
+//<<<<<<< HEAD
 
+//=======
+//>>>>>>> 20adb84c0b9b03c2ea608d143e974cef7a4a3e62
 		this->lostPriorScore = totalLost;
 
 		// Calculate number of packets repaired in this interval.
@@ -614,10 +625,14 @@ namespace RTC
 		}
 
 		if (lost > sent)
+		{
 			lost = sent;
+		}
 
 		if (repaired > lost)
+		{
 			repaired = lost;
+		}
 
 #if MS_LOG_DEV_LEVEL == 3
 		MS_DEBUG_TAG(

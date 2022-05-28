@@ -68,7 +68,7 @@ namespace RTC
 		ReceiverReportPacket* ReceiverReportPacket::Parse(const uint8_t* data, size_t len, size_t offset)
 		{
 			MS_TRACE();
-
+			// RTCP receiver report (RFC 3550).			//			//   0                   1                   2                   3			//   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1			//  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+			//  |V=2|P|    RC   |   PT=RR=201   |             length            |			//  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+			//  |                     SSRC of packet sender                     |			//  +=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+			//  |                         report block(s)                       |			//  |                            ....                               |
 			// Get the header.
 			auto* header = const_cast<CommonHeader*>(reinterpret_cast<const CommonHeader*>(data));
 
@@ -88,13 +88,19 @@ namespace RTC
 			packet->SetSsrc(ssrc);
 
 			if (offset == 0)
+			{
 				offset = sizeof(Packet::CommonHeader) + 4u /* ssrc */;
-
+			}
+			// RC ===> report block个数
 			uint8_t count = header->count;
 
 			while ((count-- != 0u) && (len > offset))
 			{
+//<<<<<<< HEAD
 				// RR的反馈信息
+//=======
+				// 可能有多个源 count是源的个数反馈 信息都是要收集的哈
+//>>>>>>> 20adb84c0b9b03c2ea608d143e974cef7a4a3e62
 				ReceiverReport* report = ReceiverReport::Parse(data + offset, len - offset);
 
 				if (report != nullptr)
