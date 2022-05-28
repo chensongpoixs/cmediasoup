@@ -1,5 +1,1 @@
-﻿  match.cc
-  charconv_bigint.cc
-  charconv_parse.cc
-  arg.cc
-  float_conversion.cc
+﻿  abseil.vcxproj -> C:\Work\mediaserver\mediasoup-demo\server\node_modules\mediasoup\worker\Debug\lib\abseil.lib

@@ -1,1 +1,87 @@
-﻿
+﻿  match.cc
+  charconv_bigint.cc
+  charconv_parse.cc
+  arg.cc
+  float_conversion.cc
+  output.cc
+  bind.cc
+  parser.cc
+  extension.cc
+  memutil.cc
+  ostringstream.cc
+  pow10_helper.cc
+  utf8.cc
+  string_view.cc
+  str_cat.cc
+  ascii.cc
+  numbers.cc
+  charconv.cc
+  str_split.cc
+  substitute.cc
+  Generating Code...
+  Compiling...
+  escaping.cc
+  str_replace.cc
+  bad_any_cast.cc
+  bad_optional_access.cc
+  bad_variant_access.cc
+  optional.cc
+  blocking_counter.cc
+  mutex.cc
+  per_thread_sem.cc
+  create_thread_identity.cc
+  waiter.cc
+  graphcycles.cc
+  barrier.cc
+  notification.cc
+  hash.cc
+  city.cc
+  symbolize.cc
+  failure_signal_handler.cc
+  leak_check_disable.cc
+  examine_stack.cc
+  Generating Code...
+  Compiling...
+  vdso_support.cc
+  stack_consumption.cc
+  address_is_readable.cc
+  elf_mem_image.cc
+  demangle.cc
+  leak_check.cc
+  stacktrace.cc
+  time_zone_format.cc
+  time_zone_impl.cc
+  time_zone_lookup.cc
+  time_zone_info.cc
+  time_zone_if.cc
+  time_zone_fixed.cc
+  zone_info_source.cc
+  time_zone_libc.cc
+  civil_time_detail.cc
+  time_zone_posix.cc
+  clock.cc
+  duration.cc
+  civil_time.cc
+  Generating Code...
+  Compiling...
+  format.cc
+  time.cc
+  hashtablez_force_sampling.cc
+  raw_hash_set.cc
+  hashtablez_sampler_force_weak_definition.cc
+  hashtablez_sampler.cc
+  int128.cc
+  spinlock_wait.cc
+  cycleclock.cc
+  spinlock.cc
+  unscaledcycleclock.cc
+  sysinfo.cc
+  raw_logging.cc
+  throw_delegate.cc
+  thread_identity.cc
+  low_level_alloc.cc
+  dynamic_annotations.cc
+  Generating Code...
+hashtablez_force_sampling.obj : warning LNK4006: _kAbslContainerInternalSampleEverything already defined in hashtablez_sampler_force_weak_definition.obj; second definition ignored
+hashtablez_force_sampling.obj : warning LNK4221: This object file does not define any previously undefined public symbols, so it will not be used by any link operation that consumes this library
+  abseil.vcxproj -> C:\Work\mediaserver\mediasoup-demo\server\node_modules\mediasoup\worker\Release\lib\abseil.lib

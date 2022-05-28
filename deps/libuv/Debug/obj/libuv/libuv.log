@@ -1,8 +1,0 @@
-﻿  fs-poll.c
-  idna.c
-  inet.c
-  random.c
-  strscpy.c
-  threadpool.c
-  timer.c
-  uv-data-getter-setters.c
