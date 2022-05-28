@@ -149,7 +149,7 @@ namespace RTC
 	void RtpStreamSend::ReceiveRtcpReceiverReport(RTC::RTCP::ReceiverReport* report)
 	{
 		MS_TRACE();
-
+		
 		/* Calculate RTT. */
 
 		// Get the NTP representation of the current timestamp.
@@ -166,9 +166,10 @@ namespace RTC
 		//  NTP时间戳的中间32位
 //>>>>>>> 20adb84c0b9b03c2ea608d143e974cef7a4a3e62
 		uint32_t lastSr = report->GetLastSenderReport();
+		
 		// 记录接收SR的时间与发送SR的时间差
 		uint32_t dlsr   = report->GetDelaySinceLastSenderReport();
-
+		
 		// RTT in 1/2^16 second fractions.
 		uint32_t rtt{ 0 };
 
@@ -176,9 +177,13 @@ namespace RTC
 		// and dlsr values in the Receiver Report.
 		if (lastSr && dlsr && (compactNtp > dlsr + lastSr))
 		{
+			INFO_EX_LOG("[lastSr = %u][dlstr = %u][compactNtp = %u]", lastSr, dlsr, compactNtp);
 			rtt = compactNtp - dlsr - lastSr;
 		}
-
+		else
+		{
+			INFO_EX_LOG("[lastSr = %u][dlstr = %u][compactNtp = %u]", lastSr, dlsr, compactNtp);
+		}
 		// RTT in milliseconds.
 		this->rtt = static_cast<float>(rtt >> 16) * 1000;
 		this->rtt += (static_cast<float>(rtt & 0x0000FFFF) / 65536) * 1000;
@@ -193,9 +198,10 @@ namespace RTC
 
 //>>>>>>> 20adb84c0b9b03c2ea608d143e974cef7a4a3e62
 		this->packetsLost  = report->GetTotalLost();
+
 		//上一次报告之后从SSRC_n来包的漏包比列
 		this->fractionLost = report->GetFractionLost();
-
+		INFO_EX_LOG("[packetsLost = %u][fractionLost = %u][rtt = %u]", packetsLost, fractionLost, rtt);
 		// Update the score with the received RR.
 		UpdateScore(report);
 	}
@@ -580,16 +586,24 @@ namespace RTC
 	{
 		MS_TRACE();
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Calculate number of packets sent in this interval.
-		auto totalSent = this->transmissionCounter.GetPacketCount();
-		auto sent      = totalSent - this->sentPriorScore;
-
+		// 1. 发送总包数
+		size_t totalSent = this->transmissionCounter.GetPacketCount();
+		// 2. 先前时刻发送包数
+		size_t sent      = totalSent - this->sentPriorScore;
+		// 3. 记录当前时刻总发送包数
 		this->sentPriorScore = totalSent;
-
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Calculate number of packets lost in this interval.
+		// 4. 总丢包数
 		uint32_t totalLost = report->GetTotalLost() > 0 ? report->GetTotalLost() : 0;
 		uint32_t lost;
-
+		INFO_EX_LOG("[totalSent = %u][sent = %u][totalLost = %u]", totalSent, sent, totalLost);
+		// 5. 上一时刻到现在时刻是否有丢包
+		// | ...     |        <-->          |
+		// |     上一个时刻                  现在
+		//
 		if (totalLost < this->lostPriorScore)
 		{
 			lost = 0;
@@ -602,33 +616,43 @@ namespace RTC
 
 //=======
 //>>>>>>> 20adb84c0b9b03c2ea608d143e974cef7a4a3e62
+		// 6. 记录当前时刻总丢包数
 		this->lostPriorScore = totalLost;
 
 		// Calculate number of packets repaired in this interval.
-		auto totalRepaired = this->packetsRepaired;
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		// 7. 记录总修复包 丢包修复总数量
+		size_t totalRepaired = this->packetsRepaired;
+		// 8. 上一个时刻到现在修复包的数量
 		uint32_t repaired  = totalRepaired - this->repairedPriorScore;
-
+		// 9. 记录当前时刻总修复包的数量
 		this->repairedPriorScore = totalRepaired;
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Calculate number of packets retransmitted in this interval.
+		// 10 . 记录总重新发送包的数量
 		auto totatRetransmitted = this->packetsRetransmitted;
+		// 11. 上一个时刻到现在重新发送包的数量
 		uint32_t retransmitted  = totatRetransmitted - this->retransmittedPriorScore;
-
+		INFO_EX_LOG("[totalRepaired = %u][repaired = %u][packetsRetransmitted = %u]", totalRepaired, repaired, packetsRetransmitted);
+		// 12. 记录当前时刻总重新发送包数量
 		this->retransmittedPriorScore = totatRetransmitted;
 
 		// We didn't send any packet.
+		// 13. 判断上一个时刻到现在之间没有发送包
 		if (sent == 0)
 		{
+			INFO_EX_LOG("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
 			RTC::RtpStream::UpdateScore(10);
 
 			return;
 		}
-
+		// 14. 上一个时刻到现在丢包数量大于发送包数量 ， 就修改丢包总数为正常发送包数量哈
 		if (lost > sent)
 		{
 			lost = sent;
 		}
-
+		// 15. 上一个时刻到现在 修复包数量大于丢包数量， 就修改包为丢包数量哈
 		if (repaired > lost)
 		{
 			repaired = lost;
@@ -650,18 +674,27 @@ namespace RTC
 		  repaired,
 		  retransmitted);
 #endif
-
+		// 16. 上一个时刻到现在修复包比率 = 修复包/发送包
 		auto repairedRatio  = static_cast<float>(repaired) / static_cast<float>(sent);
+		// 17. 上一个时刻到现在修复包权重 =   [1/(修复包比率 + 1))] ^ 4 =====> ||||||||||||
 		auto repairedWeight = std::pow(1 / (repairedRatio + 1), 4);
-
+		INFO_EX_LOG("== [repairedRatio = %s][repairedWeight = %s]", std::to_string(repairedRatio).c_str(), std::to_string(repairedWeight).c_str());
 		MS_ASSERT(retransmitted >= repaired, "repaired packets cannot be more than retransmitted ones");
 
-		if (retransmitted > 0)
-			repairedWeight *= static_cast<float>(repaired) / retransmitted;
 
+		// 18. 上一个时刻到现在 修复包数量大于0 , 修复包权重格式 = repairedWeight  * (修复包/ 重新发送包)
+		if (retransmitted > 0)
+		{
+			repairedWeight *= static_cast<float>(repaired) / retransmitted;
+		}
+
+		// 19. 丢包数量 重新估计  = lost -  (修复包 * 重新发送包)  ????
 		lost -= repaired * repairedWeight;
 
+		// 20. 上一个时刻到现在已经完成传输包/总发送包比例 =  (发送总包数量 - 发送无效总包数量) / 发送总包数量
 		auto deliveredRatio = static_cast<float>(sent - lost) / static_cast<float>(sent);
+
+		// 21. 分数 计算公式 =  函数即四舍五入取偶((有效总包数量 ^ 4) * 10) 
 		auto score          = static_cast<uint8_t>(std::round(std::pow(deliveredRatio, 4) * 10));
 
 #if MS_LOG_DEV_LEVEL == 3
@@ -675,7 +708,7 @@ namespace RTC
 		  lost,
 		  score);
 #endif
-
+		INFO_EX_LOG("[pdatescore = %u]", score);
 		RtpStream::UpdateScore(score);
 	}
 } // namespace RTC

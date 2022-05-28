@@ -266,7 +266,8 @@ namespace RTC
 		size_t weight{ 0 };
 		size_t samples{ 0 };
 		size_t totalScore{ 0 };
-
+		// 加权平均数  计算 哈
+		// 1. 权重越大 判断的占有标量越大哈 
 		for (auto score : this->scores)
 		{
 			weight++;
@@ -276,7 +277,7 @@ namespace RTC
 
 		// clang-tidy "thinks" that this can lead to division by zero but we are
 		// smarter.
-		// NOLINTNEXTLINE(clang-analyzer-core.DivideZero)
+		// NOLINTNEXTLINE(clang-analyzer-core.DivideZero) // Round 函数即四舍五入取偶。
 		this->score = static_cast<uint8_t>(std::round(static_cast<double>(totalScore) / samples));
 
 		// Call the listener if the global score has changed.
