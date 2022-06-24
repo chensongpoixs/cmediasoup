@@ -1458,7 +1458,7 @@ namespace RTC
 						newTraceEventTypes.probation = true;
 					if (typeStr == "bwe")
 					{
-						//¶©ÔÄÁ÷Á¿ÐÅÏ¢ 
+						//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ 
 						newTraceEventTypes.bwe = true;
 					}
 				}
@@ -2458,7 +2458,7 @@ namespace RTC
 			{
 				MS_DEBUG_TAG(
 				  rtcp,
-				  "unhandled RTCP type received [type:%" PRIu8 "]",
+				  "unhandled RTCP type received [type:%"  "]",
 				  static_cast<uint8_t>(packet->GetType()));
 			}
 		}

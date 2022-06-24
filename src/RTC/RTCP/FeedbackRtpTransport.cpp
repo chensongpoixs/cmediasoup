@@ -216,7 +216,8 @@ namespace RTC
 		void FeedbackRtpTransportPacket::Dump() const
 		{
 			MS_TRACE();
-
+			static int count = 0;
+			printf("[count = %u]\n", ++count);
 			MS_DUMP("<FeedbackRtpTransportPacket>");
 			MS_DUMP("  base sequence         : %" PRIu16, this->baseSequenceNumber);
 			MS_DUMP("  packet status count   : %" PRIu16, this->packetStatusCount);
@@ -339,8 +340,10 @@ namespace RTC
 			// ignore it.
 			// NOTE: Not very spec compliant but libwebrtc does it.
 			// Also ignore if the sequence number matches the latest seen.
+			printf("[%s][%d][info][sequenceNumber = %u][latestSequenceNumber = %u]\n", __FUNCTION__, __LINE__, sequenceNumber, latestSequenceNumber);
 			if (!RTC::SeqManager<uint16_t>::IsSeqHigherThan(sequenceNumber, this->latestSequenceNumber))
 			{
+
 				return AddPacketResult::SUCCESS;
 			}
 

@@ -89,14 +89,14 @@ namespace RTC
 		}
 
 		RemoveOldData(nowMs);
-		// ±ÈÌØÁ÷ / ×ÜµÄ»¬¶¯´°¿ÚºÁÃëÊı
+		// æ¯”ç‰¹æµ / æ€»çš„æ»‘åŠ¨çª—å£æ¯«ç§’æ•°
 		float scale = this->scale / this->windowSizeMs;
 
 		this->lastTime = nowMs;
-		// ¾ßÌå¾ÍÊÇ»¬¶¯´°¿Ú±ÈÌØÁ÷µÄ¹«Ê½ =  ×Ü»¬¶¯´°¿ÚÖĞÓĞµÄÊı¾İµÄ×ÜºÍ * 8000 / windowsizems  ;
-		// Ô­À´ÎÒÒÔÎªÓĞÊ²Ã´ÌØÊâ¹«Ê½ÄØ£¡£¡£¡
+		// å…·ä½“å°±æ˜¯æ»‘åŠ¨çª—å£æ¯”ç‰¹æµçš„å…¬å¼ =  æ€»æ»‘åŠ¨çª—å£ä¸­æœ‰çš„æ•°æ®çš„æ€»å’Œ * 8000 / windowsizems  ;
+		// åŸæ¥æˆ‘ä»¥ä¸ºæœ‰ä»€ä¹ˆç‰¹æ®Šå…¬å¼å‘¢ï¼ï¼ï¼
 		this->lastRate = static_cast<uint32_t>(std::trunc(this->totalCount * scale + 0.5f));
-		//trunc()º¯ÊıÊÇcmath±êÍ·µÄ¿âº¯Êı£¬ÓÃÓÚ½«ÖµËÄÉáÎåÈë(½Ø¶Ï)ÎªÁã£¬Ëü½ÓÊÜÒ»¸öÊı×Ö²¢·µ»ØÆä´óĞ¡²»´óÓÚ¸ø¶¨Êı×ÖµÄ×î½üÕûÊıÖµ¡£
+		//trunc()å‡½æ•°æ˜¯cmathæ ‡å¤´çš„åº“å‡½æ•°ï¼Œç”¨äºå°†å€¼å››èˆäº”å…¥(æˆªæ–­)ä¸ºé›¶ï¼Œå®ƒæ¥å—ä¸€ä¸ªæ•°å­—å¹¶è¿”å›å…¶å¤§å°ä¸å¤§äºç»™å®šæ•°å­—çš„æœ€è¿‘æ•´æ•°å€¼ã€‚
 		return this->lastRate;
 	}
 
@@ -109,16 +109,16 @@ namespace RTC
 		{
 			return;
 		}
-		// 1. Õâ¸öÖµÊÇ¸ù¾İ µ±Ç°ºÁÃëÊı¼õÈ¥È«²¿µÄ»¬¶¯´°¿ÚÊ±¼äÀ´¼ÆËãµÄ     
+		// 1. è¿™ä¸ªå€¼æ˜¯æ ¹æ® å½“å‰æ¯«ç§’æ•°å‡å»å…¨éƒ¨çš„æ»‘åŠ¨çª—å£æ—¶é—´æ¥è®¡ç®—çš„
 		uint64_t newoldestTime = nowMs - this->windowSizeMs;
 
-		// 2. ÅĞ¶ÏÊÇ·ñĞ¡ÓÚ»¬¶¯´°¿ÚÖĞ×îĞ¡µÄÊ±¼äºÁÃëÊı £¬ Èç¹ûĞ¡ÓÚ¾Í²»ĞèÒª´¦Àí¹ş£¨»¬¶¯´°¿ÚÖĞÃ»ÓĞ¼ÆËã¸ÃÖµ¹ş£©
+		// 2. åˆ¤æ–­æ˜¯å¦å°äºæ»‘åŠ¨çª—å£ä¸­æœ€å°çš„æ—¶é—´æ¯«ç§’æ•° ï¼Œ å¦‚æœå°äºå°±ä¸éœ€è¦å¤„ç†å“ˆï¼ˆæ»‘åŠ¨çª—å£ä¸­æ²¡æœ‰è®¡ç®—è¯¥å€¼å“ˆï¼‰
 		// Oldest item already removed.
 		if (newoldestTime <= this->oldestItemStartTime)
 		{
 			return;
 		}
-		// ËµÃ÷ÉÏ´Î·¢ËÍÊı¾İÊ±¼ä³¤Ì«³¤£¬ ³¬³ö»¬¶¯´°¿ÚµÄÊ±¼ä³¤ ĞèÒªÖØÖÃ»¬¶¯´°¿Ú
+		// è¯´æ˜ä¸Šæ¬¡å‘é€æ•°æ®æ—¶é—´é•¿å¤ªé•¿ï¼Œ è¶…å‡ºæ»‘åŠ¨çª—å£çš„æ—¶é—´é•¿ éœ€è¦é‡ç½®æ»‘åŠ¨çª—å£
 		// A whole window size time has elapsed since last entry. Reset the buffer.
 		if (newoldestTime > this->newestItemStartTime)
 		{
@@ -126,7 +126,7 @@ namespace RTC
 
 			return;
 		}
-		// ÒÆ³ı³¬³ö»¬¶¯´°¿ÚÊ±¼äµÄÊı¾İ count 
+		// ç§»é™¤è¶…å‡ºæ»‘åŠ¨çª—å£æ—¶é—´çš„æ•°æ® count
 		while (this->oldestItemStartTime < newoldestTime)
 		{
 			BufferItem& oldestItem = buffer[this->oldestItemIndex];
@@ -140,7 +140,7 @@ namespace RTC
 			}
 
 			const BufferItem& newOldestItem = buffer[this->oldestItemIndex];
-			// ×ÜÊÇ¼ÇÂ¼»¬¶¯´°¿ÚÖĞ×îĞ¡ºÁÃëÊı
+			// æ€»æ˜¯è®°å½•æ»‘åŠ¨çª—å£ä¸­æœ€å°æ¯«ç§’æ•°
 			this->oldestItemStartTime       = newOldestItem.time;
 		}
 	}
