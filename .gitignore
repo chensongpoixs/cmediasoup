@@ -51,3 +51,4 @@
 out
 deps
 deps/*
+deps/gyp/pylib/gyp/*.pyc

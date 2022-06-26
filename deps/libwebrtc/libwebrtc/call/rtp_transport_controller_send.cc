@@ -269,10 +269,10 @@ void RtpTransportControllerSend::MaybeCreateControllers() {
 
   initial_config_.constraints.at_time =
       Timestamp::ms(DepLibUV::GetTimeMsInt64());
-
+	// 创建GoogCcNetworkController
   controller_ = controller_factory_override_->Create(initial_config_);
   process_interval_ = controller_factory_override_->GetProcessInterval();
-
+	// 间隔更新GoogCcNetworkController
   UpdateControllerWithTimeInterval();
 }
 
@@ -284,7 +284,12 @@ void RtpTransportControllerSend::UpdateControllerWithTimeInterval() {
 
   ProcessInterval msg;
   msg.at_time = Timestamp::ms(DepLibUV::GetTimeMsInt64());
+	// 对码率进行检测和更新，将结果转发给pacer
+	/**
+	 * 调用GoogCcNetworkController::OnProcessInterval()做间隔的码率检测和更新
 
+调用PostUpdates()将最新的码率给转发到pacer
+	 */
   PostUpdates(controller_->OnProcessInterval(msg));
 }
 

@@ -8,7 +8,9 @@
  *  be found in the AUTHORS file in the root of the source tree.
  *
  *  FEC and NACK added bitrate is handled outside class
- */
+ *
+ * 基于丢包计算预估码率，结合延迟预估码率，得到最终的目标码率
+ * /
 
 #ifndef MODULES_BITRATE_CONTROLLER_SEND_SIDE_BANDWIDTH_ESTIMATION_H_
 #define MODULES_BITRATE_CONTROLLER_SEND_SIDE_BANDWIDTH_ESTIMATION_H_

@@ -6,7 +6,9 @@
  *  tree. An additional intellectual property rights grant can be found
  *  in the file PATENTS.  All contributing project authors may
  *  be found in the AUTHORS file in the root of the source tree.
- */
+ *
+ *  基于延迟预估码率
+ * /
 
 #ifndef MODULES_CONGESTION_CONTROLLER_GOOG_CC_DELAY_BASED_BWE_H_
 #define MODULES_CONGESTION_CONTROLLER_GOOG_CC_DELAY_BASED_BWE_H_

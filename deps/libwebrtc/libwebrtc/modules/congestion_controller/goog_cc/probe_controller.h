@@ -6,7 +6,9 @@
  *  tree. An additional intellectual property rights grant can be found
  *  in the file PATENTS.  All contributing project authors may
  *  be found in the AUTHORS file in the root of the source tree.
- */
+ *
+ * 探测控制器，通过目标码率判断下次是否探测，探测码率大小
+ * /
 
 #ifndef MODULES_CONGESTION_CONTROLLER_GOOG_CC_PROBE_CONTROLLER_H_
 #define MODULES_CONGESTION_CONTROLLER_GOOG_CC_PROBE_CONTROLLER_H_
