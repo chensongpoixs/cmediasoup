@@ -29,16 +29,14 @@ std::unique_ptr<NetworkControllerInterface>
 GoogCcNetworkControllerFactory::Create(NetworkControllerConfig config) {
   GoogCcConfig goog_cc_config;
   goog_cc_config.feedback_only = factory_config_.feedback_only;
-  if (factory_config_.network_state_estimator_factory) {
+  if (factory_config_.network_state_estimator_factory)
+	{
     // RTC_DCHECK(config.key_value_config);
-    goog_cc_config.network_state_estimator =
-        factory_config_.network_state_estimator_factory->Create(
-            config.key_value_config);
+    goog_cc_config.network_state_estimator = factory_config_.network_state_estimator_factory->Create(config.key_value_config);
   }
-  if (factory_config_.network_state_predictor_factory) {
-    goog_cc_config.network_state_predictor =
-        factory_config_.network_state_predictor_factory
-            ->CreateNetworkStatePredictor();
+  if (factory_config_.network_state_predictor_factory)
+	{
+    goog_cc_config.network_state_predictor = factory_config_.network_state_predictor_factory ->CreateNetworkStatePredictor();
   }
   return absl::make_unique<GoogCcNetworkController>(config,
                                                     std::move(goog_cc_config));
