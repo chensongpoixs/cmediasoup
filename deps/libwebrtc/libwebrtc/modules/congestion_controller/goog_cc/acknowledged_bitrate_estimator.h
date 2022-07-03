@@ -8,7 +8,7 @@
  *  be found in the AUTHORS file in the root of the source tree.
  *
  *  估算当前的吞吐量
- * /
+ */
 
 #ifndef MODULES_CONGESTION_CONTROLLER_GOOG_CC_ACKNOWLEDGED_BITRATE_ESTIMATOR_H_
 #define MODULES_CONGESTION_CONTROLLER_GOOG_CC_ACKNOWLEDGED_BITRATE_ESTIMATOR_H_
@@ -44,6 +44,7 @@ class AcknowledgedBitrateEstimator {
  private:
   absl::optional<Timestamp> alr_ended_time_;
   bool in_alr_;
+	// 使用滑动窗口 + 卡尔曼滤波计算当前发送吞吐量
   std::unique_ptr<BitrateEstimator> bitrate_estimator_;
 };
 

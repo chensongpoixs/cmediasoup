@@ -239,7 +239,10 @@ void RtpTransportControllerSend::OnTransportFeedback(
       transport_feedback_adapter_.ProcessTransportFeedback(
           feedback, Timestamp::ms(DepLibUV::GetTimeMsInt64()));
   if (feedback_msg)
-    PostUpdates(controller_->OnTransportPacketsFeedback(*feedback_msg));
+	{
+		// 最终通过RtpTransportControllerSend将feedback转发到GoogCcNetworkController进行码率预估后
+		PostUpdates(controller_->OnTransportPacketsFeedback(*feedback_msg));
+	}
   pacer_.UpdateOutstandingData(
       transport_feedback_adapter_.GetOutstandingData().bytes());
 }
@@ -267,8 +270,7 @@ void RtpTransportControllerSend::MaybeCreateControllers() {
 
   control_handler_ = absl::make_unique<CongestionControlHandler>();
 
-  initial_config_.constraints.at_time =
-      Timestamp::ms(DepLibUV::GetTimeMsInt64());
+  initial_config_.constraints.at_time = Timestamp::ms(DepLibUV::GetTimeMsInt64());
 	// 创建GoogCcNetworkController
   controller_ = controller_factory_override_->Create(initial_config_);
   process_interval_ = controller_factory_override_->GetProcessInterval();
