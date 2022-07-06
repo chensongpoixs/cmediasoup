@@ -14,16 +14,25 @@
 
 namespace webrtc {
 
-std::string ToString(DataRate value) {
+std::string ToString(DataRate value)
+{
   std::ostringstream sb;
-  if (value.IsPlusInfinity()) {
+  if (value.IsPlusInfinity())
+	{
     sb << "+inf bps";
-  } else if (value.IsMinusInfinity()) {
+  }
+	else if (value.IsMinusInfinity())
+	{
     sb << "-inf bps";
-  } else {
-    if (value.bps() == 0 || value.bps() % 1000 != 0) {
+  }
+	else
+	{
+    if (value.bps() == 0 || value.bps() % 1000 != 0)
+		{
       sb << value.bps() << " bps";
-    } else {
+    }
+		else
+		{
       sb << value.kbps() << " kbps";
     }
   }
