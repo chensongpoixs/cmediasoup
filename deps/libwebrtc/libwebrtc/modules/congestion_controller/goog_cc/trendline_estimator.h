@@ -8,7 +8,7 @@
  *  be found in the AUTHORS file in the root of the source tree.
  *
  *  使用线性回归计算当前网络拥堵情况
- * /
+ */
 #ifndef MODULES_CONGESTION_CONTROLLER_GOOG_CC_TRENDLINE_ESTIMATOR_H_
 #define MODULES_CONGESTION_CONTROLLER_GOOG_CC_TRENDLINE_ESTIMATOR_H_
 

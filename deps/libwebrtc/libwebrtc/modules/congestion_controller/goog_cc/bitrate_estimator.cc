@@ -61,8 +61,8 @@ BitrateEstimator::BitrateEstimator(const WebRtcKeyValueConfig* key_value_config)
 BitrateEstimator::~BitrateEstimator() = default;
 /**
  * 通过新来feedback packet的大小调用UpdateWindow()去计算当前的码率(bitrate_sample_kbps)
-
-将当前计算出来当前码率(bitrate_sample_kbps)作为观测值, 把上一个预测码率(bitrate_estimate_kbps_)当作预测值, 使用贝叶斯滤波去修正当前观测码率(贝叶斯滤波可参考此文[https://www.cnblogs.com/ishen/p/14987878.html]),
+将当前计算出来当前码率(bitrate_sample_kbps)作为观测值, 把上一个预测码率(bitrate_estimate_kbps_)当作预测值,
+ 使用贝叶斯滤波去修正当前观测码率(贝叶斯滤波可参考此文[https://www.cnblogs.com/ishen/p/14987878.html]),
  其中引入了一个基于观测值和预测值的差的变量sample_uncertainty去作为样本标准差.
  * @param at_time
  * @param amount
@@ -73,7 +73,9 @@ void BitrateEstimator::Update(Timestamp at_time, DataSize amount, bool in_alr) {
   // We use a larger window at the beginning to get a more stable sample that
   // we can use to initialize the estimate.
   if (bitrate_estimate_kbps_ < 0.f)
-    rate_window_ms = initial_window_ms_;
+	{
+		rate_window_ms = initial_window_ms_;
+	}
 	// 计算出当前时刻码率
   float bitrate_sample_kbps =  UpdateWindow(at_time.ms(), amount.bytes(), rate_window_ms);
   if (bitrate_sample_kbps < 0.0f)

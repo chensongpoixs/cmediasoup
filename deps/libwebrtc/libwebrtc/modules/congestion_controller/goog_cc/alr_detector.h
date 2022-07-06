@@ -8,7 +8,7 @@
  *  be found in the AUTHORS file in the root of the source tree.
  *
  * 应用(码率)受限检测，检测当前的发送码率是否和目标码率由于编码器等原因相差过大受限了，受限情况下会触发带宽预测过程的特殊处理
- * /
+ */
 
 #ifndef MODULES_CONGESTION_CONTROLLER_GOOG_CC_ALR_DETECTOR_H_
 #define MODULES_CONGESTION_CONTROLLER_GOOG_CC_ALR_DETECTOR_H_

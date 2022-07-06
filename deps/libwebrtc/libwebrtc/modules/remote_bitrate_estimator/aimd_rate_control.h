@@ -8,7 +8,7 @@
  *  be found in the AUTHORS file in the root of the source tree.
  *
  * 通过TrendLine预测出来的网络状态对码率进行aimd方式调整
- * /
+ */
 
 #ifndef MODULES_REMOTE_BITRATE_ESTIMATOR_AIMD_RATE_CONTROL_H_
 #define MODULES_REMOTE_BITRATE_ESTIMATOR_AIMD_RATE_CONTROL_H_
