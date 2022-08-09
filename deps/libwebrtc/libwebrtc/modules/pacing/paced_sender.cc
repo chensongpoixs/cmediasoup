@@ -64,7 +64,7 @@ PacedSender::PacedSender(PacketRouter* packet_router,
 
 void PacedSender::CreateProbeCluster(int bitrate_bps, int cluster_id) {
   // TODO: REMOVE
-  // MS_DEBUG_DEV("---- bitrate_bps:%d, cluster_id:%d", bitrate_bps, cluster_id);
+   MS_DEBUG_DEV("---- bitrate_bps:%d, cluster_id:%d", bitrate_bps, cluster_id);
 
   prober_.CreateProbeCluster(bitrate_bps, DepLibUV::GetTimeMsInt64(), cluster_id);
 }

@@ -1,4 +1,4 @@
-#define MS_CLASS "RTC::RtpParameters"
+﻿#define MS_CLASS "RTC::RtpParameters"
 // #define MS_LOG_DEV_LEVEL 3
 
 #include "Logger.hpp"
@@ -34,7 +34,7 @@ namespace RTC
 	RtpParameters::Type RtpParameters::GetType(const RtpParameters& rtpParameters)
 	{
 		MS_TRACE();
-
+		// 视频是否是SVC与SIMULCAST
 		if (rtpParameters.encodings.size() == 1)
 		{
 			auto& encoding = rtpParameters.encodings[0];

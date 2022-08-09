@@ -3,6 +3,7 @@
 
 #include "PayloadChannel/PayloadChannelSocket.hpp"
 #include "Logger.hpp"
+#include "Utils.hpp"
 #include "MediaSoupErrors.hpp"
 #include "PayloadChannel/PayloadChannelRequest.hpp"
 #include <cmath>   // std::ceil()
@@ -69,7 +70,7 @@ namespace PayloadChannel
 			return;
 
 		std::string message = jsonMessage.dump();
-
+		DEBUG_EX_LOG("[message = %s][payload= %s]", message.c_str(), payload);
 		if (message.length() > NsPayloadMaxLen)
 		{
 			MS_ERROR("mesage too big");
@@ -95,7 +96,7 @@ namespace PayloadChannel
 			return;
 
 		std::string message = jsonMessage.dump();
-
+		DEBUG_EX_LOG("message = %s", message.c_str());
 		if (message.length() > NsPayloadMaxLen)
 		{
 			MS_ERROR_STD("mesage too big");
@@ -111,7 +112,7 @@ namespace PayloadChannel
 		MS_TRACE();
 
 		size_t nsNumLen;
-
+		DEBUG_EX_LOG("[nsPayload = %s]", nsPayload);
 		if (nsPayloadLen == 0)
 		{
 			nsNumLen             = 1;

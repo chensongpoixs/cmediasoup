@@ -6,6 +6,8 @@
  *  tree. An additional intellectual property rights grant can be found
  *  in the file PATENTS.  All contributing project authors may
  *  be found in the AUTHORS file in the root of the source tree.
+ *
+ *  基于延迟预估码率
  */
 
 #ifndef MODULES_CONGESTION_CONTROLLER_GOOG_CC_DELAY_BASED_BWE_H_
@@ -87,6 +89,7 @@ class DelayBasedBwe {
   std::unique_ptr<DelayIncreaseDetectorInterface> delay_detector_;
   Timestamp last_seen_packet_;
   bool uma_recorded_;
+	// 通过TrendLine预测出来的网络状态对码率进行aimd方式调整
   AimdRateControl rate_control_;
   DataRate prev_bitrate_;
   BandwidthUsage prev_state_;

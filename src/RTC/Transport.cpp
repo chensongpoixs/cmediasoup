@@ -165,7 +165,9 @@ namespace RTC
 			bool isDataChannel{ false };
 
 			if (jsonIsDataChannelIt != data.end() && jsonIsDataChannelIt->is_boolean())
+			{
 				isDataChannel = jsonIsDataChannelIt->get<bool>();
+			}
 
 			// This may throw.
 			this->sctpAssociation = new RTC::SctpAssociation(
@@ -645,7 +647,187 @@ namespace RTC
 			case Channel::ChannelRequest::MethodId::TRANSPORT_PRODUCE:
 			{
 				std::string producerId;
+				/*
+				
+				data =
+				{
+					"kind":"video",
+					"paused":false,
+					"rtpMapping":{
+					"codecs":[
+					{
+						"mappedPayloadType":101,
+						"payloadType":108
+					},
+					{
+						"mappedPayloadType":102,
+						"payloadType":109
+					}
+					],
+					"encodings":[
+					{
+						"mappedSsrc":806764358,
+						"rid":"r0",
+						"scalabilityMode":"S1T3"
+					},
+					{
+						"mappedSsrc":806764359,
+						"rid":"r1",
+						"scalabilityMode":"S1T3"
+					},
+					{
+						"mappedSsrc":806764360,
+						"rid":"r2",
+						"scalabilityMode":"S1T3"
+					}
+					]
+					},
+					"rtpParameters":{
+						"codecs":[
+						{
+						"clockRate":90000,
+						"mimeType":"video/H264",
+						"parameters":{
+						"level-asymmetry-allowed":1,
+						"packetization-mode":1,
+						"profile-level-id":"42e01f"
+					},
+						"payloadType":108,
+					"rtcpFeedback":[
+					{
+						"parameter":"",
+						"type":"goog-remb"
+					},
+					{
+						"parameter":"",
+						"type":"transport-cc"
+					},
+					{
+						"parameter":"fir",
+						"type":"ccm"
+					},
+					{
+						"parameter":"",
+						"type":"nack"
+					},
+					{
+						"parameter":"pli",
+						"type":"nack"
+					}
+					]
+					},
+					{
+						"clockRate":90000,
+						"mimeType":"video/rtx",
+						"parameters":{
+						"apt":108
+						},
+						"payloadType":109,
+						"rtcpFeedback":[
 
+					]
+					}
+					],
+					"encodings":[
+					{
+						"active":true,
+						"dtx":false,
+						"maxBitrate":500000,
+						"rid":"r0",
+						"scalabilityMode":"S1T3",
+						"scaleResolutionDownBy":4
+					},
+					{
+						"active":true,
+						"dtx":false,
+						"maxBitrate":1000000,
+						"rid":"r1",
+						"scalabilityMode":"S1T3",
+						"scaleResolutionDownBy":2
+					},
+					{
+						"active":true,
+						"dtx":false,
+						"maxBitrate":5000000,
+						"rid":"r2",
+						"scalabilityMode":"S1T3",
+						"scaleResolutionDownBy":1
+					}
+					],
+					"headerExtensions":[
+					{
+						"encrypt":false,
+						"id":4,
+						"parameters":{
+
+						},
+						"uri":"urn:ietf:params:rtp-hdrext:sdes:mid"
+					},
+					{
+						"encrypt":false,
+						"id":10,
+						"parameters":{
+
+						},
+						"uri":"urn:ietf:params:rtp-hdrext:sdes:rtp-stream-id"
+					},
+					{
+						"encrypt":false,
+						"id":11,
+						"parameters":{
+
+						},
+						"uri":"urn:ietf:params:rtp-hdrext:sdes:repaired-rtp-stream-id"
+					},
+					{
+						"encrypt":false,
+						"id":2,
+						"parameters":{
+
+						},
+					"uri":"http://www.webrtc.org/experiments/rtp-hdrext/abs-send-time"
+					},
+					{
+						"encrypt":false,
+						"id":3,
+						"parameters":{
+
+						},
+					"uri":"http://www.ietf.org/id/draft-holmer-rmcat-transport-wide-cc-extensions-01"
+					},
+					{
+						"encrypt":false,
+						"id":13,
+						"parameters":{
+
+						},
+						"uri":"urn:3gpp:video-orientation"
+					},
+					{
+						"encrypt":false,
+						"id":14,
+						"parameters":{
+
+						},
+					"uri":"urn:ietf:params:rtp-hdrext:toffset"
+					}
+						],
+						"mid":"2",
+						"rtcp":{
+						"cname":"UgYi3789TL6C/8Zx",
+						"reducedSize":true
+						}
+					}
+				}
+
+
+
+				internal = {
+					"producerId":"784c2bdd-985d-4ebf-bcdd-bb4cc42ec835",
+					"routerId":"5bd717af-b754-48f5-bd21-2a0321815863",
+					"transportId":"9ee4ef1b-0e5e-4484-8f59-40497b577be9"
+				}
+				*/
 				// This may throw.
 				SetNewProducerIdFromInternal(request->internal, producerId);
 
@@ -1275,7 +1457,10 @@ namespace RTC
 					if (typeStr == "probation")
 						newTraceEventTypes.probation = true;
 					if (typeStr == "bwe")
+					{
+						//����������Ϣ 
 						newTraceEventTypes.bwe = true;
+					}
 				}
 
 				this->traceEventTypes = newTraceEventTypes;
@@ -2273,7 +2458,7 @@ namespace RTC
 			{
 				MS_DEBUG_TAG(
 				  rtcp,
-				  "unhandled RTCP type received [type:%" PRIu8 "]",
+				  "unhandled RTCP type received [type:%"  "]",
 				  static_cast<uint8_t>(packet->GetType()));
 			}
 		}

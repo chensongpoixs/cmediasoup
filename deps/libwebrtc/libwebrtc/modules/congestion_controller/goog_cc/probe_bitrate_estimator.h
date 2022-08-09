@@ -6,6 +6,8 @@
  *  tree. An additional intellectual property rights grant can be found
  *  in the file PATENTS.  All contributing project authors may
  *  be found in the AUTHORS file in the root of the source tree.
+ *  根据feedback计算探测码率，PacingController中会将包按照cluster进行划分，transport-CC报文能得到包所属的cluster以及发送和接收信息，通过发送和接收的数据大小比判断是否到达链路上限从而进行带宽探测
+ *
  */
 
 #ifndef MODULES_CONGESTION_CONTROLLER_GOOG_CC_PROBE_BITRATE_ESTIMATOR_H_

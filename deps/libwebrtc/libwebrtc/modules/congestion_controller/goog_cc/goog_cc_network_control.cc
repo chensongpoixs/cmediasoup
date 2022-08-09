@@ -164,22 +164,49 @@ NetworkControlUpdate GoogCcNetworkController::OnNetworkRouteChange(
   MaybeTriggerOnNetworkChanged(&update, msg.at_time);
   return update;
 }
+/**
+ *
+ *
+ 在第一次调用该函数时，使用initial_config_设置DelayBasedBwe, SendSideBandwidthEstimation, ProbeController中的初始码率，ProbeController设置完码率之后会返回一个probe_cluster_config(探测簇), probe_cluster_config会返回给pacing_controller，pacing_controller在发包的时候使用其中的码率去发包以配合码率探测。
 
+为ProbeController设置最大分配码率(MaxTotalAllocatedBitrate)，这个值在ProbeController中会被用来做探测的上边界，一旦探测的码率到达这个值，就停止普通探测。
+
+	过了初始化后，SendSideBandwidthEstimation(也就是bandwidth_estimation_)会基于时间更新码率，其内部虽然是依靠cc-feedback提供丢包率来预估码率，当没有feedback也会基于时间预估当前的rtt去更新码率。
+
+	    从AlrDetector获取当前是否处于alr状态，AlrDetector在每次发送数据时(OnSentPacket)都会检测实际发送码率是否与目标码率相差太多悬殊，从而判断是否(受限于编码器等原因而导致)无法达到目标码率，从而设定处于alr状态，alr状态非常有用，带宽预测的核心是需要向链路中发送足够的包去观察链路情况，如果探测到处于alr状态无法达到这个要求，就需要一些额外手段去处理。
+
+	    设置ProbeController处于alr状态。ProbeController内完整了初始的在正常探测后就不再探测了，但如果处于alr状态或者网络变化的状态，是需要对网络进行探测以便于网络的快恢复；
+
+	    从ProbeController获取probe_cluster_config，以进行需要可能的探测
+
+	    根据rtt和congestion重新计算拥塞窗口控制器中的的数据大小(CongestionWindowPushbackController)
+
+	      bandwidth_estimation_可能对码率进行了更新，调用MaybeTriggerOnNetworkChanged()将更新的码率同步到alr，probe_controller中，同时将码率，probe_config等放到update中返回
+ *
+ * @param msg
+ * @return
+ */
 NetworkControlUpdate GoogCcNetworkController::OnProcessInterval(
     ProcessInterval msg) {
   NetworkControlUpdate update;
   if (initial_config_) {
+		// 重设loss_based和delay_based码率探测器和probe的初始码率
+		// 获得码率探测簇配置(probe_cluster_config)
     update.probe_cluster_configs =
         ResetConstraints(initial_config_->constraints);
+		// 获取当前pacing 的发送码率, padding， time_windows等
     update.pacer_config = GetPacingRates(msg.at_time);
-
+		// probe探测完成后，允许其因为alr需要快速恢复码率而继续做probe
     if (initial_config_->stream_based_config.requests_alr_probing) {
       probe_controller_->EnablePeriodicAlrProbing(
           *initial_config_->stream_based_config.requests_alr_probing);
     }
     absl::optional<DataRate> total_bitrate =
         initial_config_->stream_based_config.max_total_allocated_bitrate;
-    if (total_bitrate) {
+    if (total_bitrate)
+		{
+			// 为probe设置最大的分配码率(MaxTotalAllocatedBitrate)作为探测的上边界
+			// 并生成响应的probe_cluster_config去进行探测
       auto probes = probe_controller_->OnMaxTotalAllocatedBitrate(
           total_bitrate->bps(), msg.at_time.ms());
       update.probe_cluster_configs.insert(update.probe_cluster_configs.end(),
@@ -187,27 +214,36 @@ NetworkControlUpdate GoogCcNetworkController::OnProcessInterval(
 
       max_total_allocated_bitrate_ = *total_bitrate;
     }
+		// 释放initial_config_，下次进来就不通过init_config做初始化了
     initial_config_.reset();
   }
-  if (congestion_window_pushback_controller_ && msg.pacer_queue) {
-    congestion_window_pushback_controller_->UpdatePacingQueue(
-        msg.pacer_queue->bytes());
-  }
-  bandwidth_estimation_->UpdateEstimate(msg.at_time);
-  absl::optional<int64_t> start_time_ms =
-      alr_detector_->GetApplicationLimitedRegionStartTime();
-  probe_controller_->SetAlrStartTimeMs(start_time_ms);
 
+	// 更新拥塞窗口中的pacing数据长度
+  if (congestion_window_pushback_controller_ && msg.pacer_queue)
+	{
+    congestion_window_pushback_controller_->UpdatePacingQueue(msg.pacer_queue->bytes());
+  }
+	// 更新码率
+  bandwidth_estimation_->UpdateEstimate(msg.at_time);
+	// 检测当前是否处于alr
+  absl::optional<int64_t> start_time_ms = alr_detector_->GetApplicationLimitedRegionStartTime();
+	// 如果处于alr，告诉probe_controller处于alr，可以进行探测，进行快恢复
+  probe_controller_->SetAlrStartTimeMs(start_time_ms);
+	// 检测当前是否因alr状态而需要做probe了，获取probe_cluster_config
   auto probes = probe_controller_->Process(msg.at_time.ms());
   update.probe_cluster_configs.insert(update.probe_cluster_configs.end(),
                                       probes.begin(), probes.end());
 
-  if (congestion_window_pushback_controller_ && current_data_window_) {
-    congestion_window_pushback_controller_->SetDataWindow(
-        *current_data_window_);
-  } else {
+  if (congestion_window_pushback_controller_ && current_data_window_)
+	{
+		// 重新设置拥塞控制窗口大小
+    congestion_window_pushback_controller_->SetDataWindow(*current_data_window_);
+  }
+	else
+	{
     update.congestion_window = current_data_window_;
   }
+	// 获取更新后的码率，probe等，同时对alr， probe_controller中的码率进行更新
   MaybeTriggerOnNetworkChanged(&update, msg.at_time);
   return update;
 }

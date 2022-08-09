@@ -43,6 +43,7 @@ inline static int onSslCertificateVerify(int /*preverifyOk*/, X509_STORE_CTX* /*
 
 inline static void onSslInfo(const SSL* ssl, int where, int ret)
 {
+	DEBUG_EX_LOG("[where = %d][ret = %d]", where, ret);
 	static_cast<RTC::DtlsTransport*>(SSL_get_ex_data(ssl, 0))->OnSslInfo(where, ret);
 }
 
@@ -718,7 +719,9 @@ namespace RTC
 			case Role::CLIENT:
 			{
 				MS_DEBUG_TAG(dtls, "running [role:client]");
-
+				 
+				///  ????????????????????????????? dtls ???? 交换协商的流程
+				 
 				SSL_set_connect_state(this->ssl);
 				SSL_do_handshake(this->ssl);
 				SendPendingOutgoingDtlsData();

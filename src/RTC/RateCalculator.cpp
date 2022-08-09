@@ -13,7 +13,9 @@ namespace RTC
 
 		// Ignore too old data. Should never happen.
 		if (nowMs < this->oldestItemStartTime)
+		{
 			return;
+		}
 
 		// Increase bytes.
 		this->bytes += size;
@@ -27,7 +29,9 @@ namespace RTC
 			this->newestItemIndex++;
 			this->newestItemStartTime = nowMs;
 			if (this->newestItemIndex >= this->windowItems)
+			{
 				this->newestItemIndex = 0;
+			}
 
 			// Newest index overlaps with the oldest one, remove it.
 			if (this->newestItemIndex == this->oldestItemIndex && this->oldestItemIndex != -1)
@@ -43,7 +47,9 @@ namespace RTC
 				oldestItem.count = 0u;
 				oldestItem.time  = 0u;
 				if (++this->oldestItemIndex >= this->windowItems)
+				{
 					this->oldestItemIndex = 0;
+				}
 			}
 
 			// Set the newest item.
@@ -78,15 +84,19 @@ namespace RTC
 		MS_TRACE();
 
 		if (nowMs == this->lastTime)
+		{
 			return this->lastRate;
+		}
 
 		RemoveOldData(nowMs);
-
+		// 比特流 / 总的滑动窗口毫秒数
 		float scale = this->scale / this->windowSizeMs;
 
 		this->lastTime = nowMs;
+		// 具体就是滑动窗口比特流的公式 =  总滑动窗口中有的数据的总和 * 8000 / windowsizems  ;
+		// 原来我以为有什么特殊公式呢！！！
 		this->lastRate = static_cast<uint32_t>(std::trunc(this->totalCount * scale + 0.5f));
-
+		//trunc()函数是cmath标头的库函数，用于将值四舍五入(截断)为零，它接受一个数字并返回其大小不大于给定数字的最近整数值。
 		return this->lastRate;
 	}
 
@@ -96,14 +106,19 @@ namespace RTC
 
 		// No item set.
 		if (this->newestItemIndex < 0 || this->oldestItemIndex < 0)
+		{
 			return;
-
+		}
+		// 1. 这个值是根据 当前毫秒数减去全部的滑动窗口时间来计算的
 		uint64_t newoldestTime = nowMs - this->windowSizeMs;
 
+		// 2. 判断是否小于滑动窗口中最小的时间毫秒数 ， 如果小于就不需要处理哈（滑动窗口中没有计算该值哈）
 		// Oldest item already removed.
 		if (newoldestTime <= this->oldestItemStartTime)
+		{
 			return;
-
+		}
+		// 说明上次发送数据时间长太长， 超出滑动窗口的时间长 需要重置滑动窗口
 		// A whole window size time has elapsed since last entry. Reset the buffer.
 		if (newoldestTime > this->newestItemStartTime)
 		{
@@ -111,7 +126,7 @@ namespace RTC
 
 			return;
 		}
-
+		// 移除超出滑动窗口时间的数据 count
 		while (this->oldestItemStartTime < newoldestTime)
 		{
 			BufferItem& oldestItem = buffer[this->oldestItemIndex];
@@ -120,9 +135,12 @@ namespace RTC
 			oldestItem.time  = 0u;
 
 			if (++this->oldestItemIndex >= this->windowItems)
+			{
 				this->oldestItemIndex = 0;
+			}
 
 			const BufferItem& newOldestItem = buffer[this->oldestItemIndex];
+			// 总是记录滑动窗口中最小毫秒数
 			this->oldestItemStartTime       = newOldestItem.time;
 		}
 	}

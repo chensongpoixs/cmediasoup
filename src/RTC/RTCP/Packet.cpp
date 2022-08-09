@@ -55,6 +55,7 @@ namespace RTC
 				}
 
 				auto* header     = const_cast<CommonHeader*>(reinterpret_cast<const CommonHeader*>(data));
+				// 这一步 ？？？ 是不是很有问题啊     ========>  数据的 要加上头的大小的哈
 				size_t packetLen = static_cast<size_t>(ntohs(header->length) + 1) * 4;
 
 				if (len < packetLen)
@@ -73,6 +74,7 @@ namespace RTC
 				{
 					case Type::SR:
 					{
+						// 1. PT= 200 发送反馈包
 						current = SenderReportPacket::Parse(data, packetLen);
 
 						if (!current)
@@ -93,6 +95,7 @@ namespace RTC
 
 					case Type::RR:
 					{
+						//2. PT = 201  接受多少包发送给对端
 						current = ReceiverReportPacket::Parse(data, packetLen);
 
 						break;
@@ -100,6 +103,7 @@ namespace RTC
 
 					case Type::SDES:
 					{
+						// 3. PT = 202  对媒体源的描述
 						current = SdesPacket::Parse(data, packetLen);
 
 						break;
@@ -107,6 +111,7 @@ namespace RTC
 
 					case Type::BYE:
 					{
+						// 4. PT = 203 不需要传输的数据
 						current = ByePacket::Parse(data, packetLen);
 
 						break;
@@ -114,6 +119,7 @@ namespace RTC
 
 					case Type::APP:
 					{
+						// 5. PT = 204 应用自定义信息
 						current = nullptr;
 
 						break;
@@ -121,6 +127,7 @@ namespace RTC
 
 					case Type::RTPFB:
 					{
+						// 6. PT = 205 反馈信息
 						current = FeedbackRtpPacket::Parse(data, packetLen);
 
 						break;
@@ -128,6 +135,7 @@ namespace RTC
 
 					case Type::PSFB:
 					{
+						// 7. PT= 206  负载情况 反馈信息
 						current = FeedbackPsPacket::Parse(data, packetLen);
 
 						break;
@@ -135,6 +143,7 @@ namespace RTC
 
 					case Type::XR:
 					{
+						// 8. PT = 207  扩展头
 						current = ExtendedReportPacket::Parse(data, packetLen);
 
 						break;

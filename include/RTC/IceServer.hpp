@@ -1,4 +1,4 @@
-#ifndef MS_RTC_ICE_SERVER_HPP
+﻿#ifndef MS_RTC_ICE_SERVER_HPP
 #define MS_RTC_ICE_SERVER_HPP
 
 #include "common.hpp"
@@ -97,9 +97,9 @@ namespace RTC
 		// Passed by argument.
 		Listener* listener{ nullptr };
 		// Others.
-		std::string usernameFragment;
-		std::string password;
-		std::string oldUsernameFragment;
+		std::string usernameFragment; // 用户名
+		std::string password;		  // 密码
+		std::string oldUsernameFragment;   // ICE 从新启动后 用户名和密码修改这边报错上一次用户名和密码
 		std::string oldPassword;
 		IceState state{ IceState::NEW };
 		std::list<RTC::TransportTuple> tuples;

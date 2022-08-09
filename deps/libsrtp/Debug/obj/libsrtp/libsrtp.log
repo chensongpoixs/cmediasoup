@@ -1,8 +1,0 @@
-﻿  ekt.c
-  srtp.c
-  aes.c
-  cipher.c
-  null_cipher.c
-  auth.c
-  null_auth.c
-  alloc.c

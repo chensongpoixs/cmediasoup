@@ -19,9 +19,12 @@ namespace RTC
 			// Get the header.
 			auto* header = const_cast<CommonHeader*>(reinterpret_cast<const CommonHeader*>(data));
 			std::unique_ptr<ByePacket> packet(new ByePacket(header));
+			// RTCP Header 头大偏移量
 			size_t offset = sizeof(Packet::CommonHeader);
+			// Report Block 的个数
 			uint8_t count = header->count;
 
+			// 4个的字节就是一个 ssrc 名称
 			while (((count--) != 0u) && (len > offset))
 			{
 				if (len - offset < 4u)
