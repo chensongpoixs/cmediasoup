@@ -1,4 +1,4 @@
-#define MS_CLASS "RTC::IceServer"
+﻿#define MS_CLASS "RTC::IceServer"
 // #define MS_LOG_DEV_LEVEL 3
 
 #include <utility>
@@ -98,6 +98,7 @@ namespace RTC
 				}
 
 				// Check authentication.
+				// 检查 用户名 和 密码 
 				switch (packet->CheckAuthentication(this->usernameFragment, this->password))
 				{
 					case RTC::StunPacket::Authentication::OK:
@@ -179,7 +180,7 @@ namespace RTC
 				  "processing STUN Binding Request [Priority:%" PRIu32 ", UseCandidate:%s]",
 				  static_cast<uint32_t>(packet->GetPriority()),
 				  packet->HasUseCandidate() ? "true" : "false");
-
+				// TODO@chensong 20220809  STUN 验证成功 返回成功的信息包 --->>>>>> 
 				// Create a success response.
 				RTC::StunPacket* response = packet->CreateSuccessResponse();
 
@@ -198,7 +199,8 @@ namespace RTC
 
 				delete response;
 
-				// Handle the tuple.
+				// Handle the tuple.  <--->
+				// TODO@chensong 20220809 驱动DTLS数字签名 流程
 				HandleTuple(tuple, packet->HasUseCandidate());
 
 				break;
@@ -322,13 +324,16 @@ namespace RTC
 					MS_DEBUG_TAG(ice, "transition from state 'new' to 'connected'");
 
 					// Store the tuple.
+					// TODO@chensong 20220809 ---记录连接上客户端 ip和port 
 					auto* storedTuple = AddTuple(tuple);
 					INFO_EX_LOG("");
 					// Mark it as selected tuple.
+					// 设置ice中列表中第一个连接上客户端为验证rtc客户端
 					SetSelectedTuple(storedTuple);
 					// Update state.
 					this->state = IceState::CONNECTED;
 					// Notify the listener.
+					// TODO@chensong 20220809 非常重要一步 驱动DTLS流程接口通知
 					this->listener->OnIceServerConnected(this);
 				}
 				else

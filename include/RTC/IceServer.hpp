@@ -16,7 +16,7 @@ namespace RTC
 		{
 			NEW = 1,
 			CONNECTED,
-			COMPLETED,
+			COMPLETED, // 完全？？？？？状态干啥呢
 			DISCONNECTED
 		};
 

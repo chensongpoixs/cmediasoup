@@ -1,4 +1,4 @@
-#define MS_CLASS "RTC::Transport"
+﻿#define MS_CLASS "RTC::Transport"
 // #define MS_LOG_DEV_LEVEL 3
 
 #include "RTC/Transport.hpp"
@@ -1458,7 +1458,7 @@ namespace RTC
 						newTraceEventTypes.probation = true;
 					if (typeStr == "bwe")
 					{
-						//����������Ϣ 
+						//??????????? 
 						newTraceEventTypes.bwe = true;
 					}
 				}
