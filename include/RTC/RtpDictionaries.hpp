@@ -1,4 +1,4 @@
-#ifndef MS_RTC_RTP_DICTIONARIES_HPP
+﻿#ifndef MS_RTC_RTP_DICTIONARIES_HPP
 #define MS_RTC_RTP_DICTIONARIES_HPP
 
 #include "common.hpp"
