@@ -1,4 +1,4 @@
-#ifndef MS_RTC_PRODUCER_HPP
+﻿#ifndef MS_RTC_PRODUCER_HPP
 #define MS_RTC_PRODUCER_HPP
 
 #include "common.hpp"
@@ -49,13 +49,13 @@ namespace RTC
 		{
 			std::string rid;
 			uint32_t ssrc{ 0 };
-			uint32_t mappedSsrc{ 0 };
+			uint32_t mappedSsrc{ 0 }; // js中随机生成的一个种子
 		};
 
 	private:
 		struct RtpMapping
 		{
-			std::map<uint8_t, uint8_t> codecs;
+			std::map<uint8_t, uint8_t> codecs; // 编码的映射表 config.js 表对于的关系 [   client_codec_table_id ->server_codec_table_id ]
 			std::vector<RtpEncodingMapping> encodings;
 		};
 
@@ -162,19 +162,34 @@ namespace RTC
 		RTC::Producer::Listener* listener{ nullptr };
 		// Allocated by this.
 		std::map<uint32_t, RTC::RtpStreamRecv*> mapSsrcRtpStream;
+
+		////////////////////////////////////////////////////////////////////////////////////////
+		// TODO@chensong 请求关键帧的处理
 		RTC::KeyFrameRequestManager* keyFrameRequestManager{ nullptr };
 		// Others.
-		RTC::Media::Kind kind;
-		RTC::RtpParameters rtpParameters;
-		RTC::RtpParameters::Type type{ RTC::RtpParameters::Type::NONE };
-		struct RtpMapping rtpMapping;
+		RTC::Media::Kind kind; // 音频、视频、applicable 数据
+		RTC::RtpParameters rtpParameters; // 编码类型
+		RTC::RtpParameters::Type type{ RTC::RtpParameters::Type::NONE };  // 传输类型 webrtc、pip、svc、simulcat
+		struct RtpMapping rtpMapping;// 选择编码对应映射表
+
+		////////////////////////////////////////////////////////////////////////////////////////
 		std::vector<RTC::RtpStreamRecv*> rtpStreamByEncodingIdx;
+
+		// 推流ssrc的评分记录 时间复杂的O(1)
 		std::vector<uint8_t> rtpStreamScores;
+
+		// /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		//////////////   查找 根据producer_id <-->  consumer_id 的映射表
 		std::map<uint32_t, RTC::RtpStreamRecv*> mapRtxSsrcRtpStream;
 		std::map<RTC::RtpStreamRecv*, uint32_t> mapRtpStreamMappedSsrc;
 		std::map<uint32_t, uint32_t> mapMappedSsrcSsrc;
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		/////////////////////////////////////////////////////////////////////////////////////////////
+		//			WebRTC 中扩展协议
 		struct RTC::RtpHeaderExtensionIds rtpHeaderExtensionIds;
+		
 		bool paused{ false };
+		//////////////////////////////////////////////////////////////////////////////////////////////
 		RTC::RtpPacket* currentRtpPacket{ nullptr };
 		// Timestamp when last RTCP was sent.
 		uint64_t lastRtcpSentTime{ 0u };

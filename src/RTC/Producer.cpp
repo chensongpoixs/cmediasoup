@@ -221,16 +221,19 @@ namespace RTC
 		this->rtpParameters = RTC::RtpParameters(*jsonRtpParametersIt);
 
 		// Evaluate type.
+		// 根据rtpParameters中encodings中设置编码传输的类型
 		this->type = RTC::RtpParameters::GetType(this->rtpParameters);
 
 		// Reserve a slot in rtpStreamByEncodingIdx and rtpStreamsScores vectors
 		// for each RTP stream.
+		// 根据客户端 的编码类型 设置每一种编码类型
 		this->rtpStreamByEncodingIdx.resize(this->rtpParameters.encodings.size(), nullptr);
 		this->rtpStreamScores.resize(this->rtpParameters.encodings.size(), 0u);
 
 		auto& encoding   = this->rtpParameters.encodings[0];
 		auto* mediaCodec = this->rtpParameters.GetCodecForEncoding(encoding);
 
+		// 检查对编码类型判断传输类型是否准确创建
 		if (!RTC::Codecs::Tools::IsValidTypeForCodec(this->type, mediaCodec->mimeType))
 		{
 			MS_THROW_TYPE_ERROR(
@@ -239,6 +242,20 @@ namespace RTC
 			  RTC::RtpParameters::GetTypeString(this->type).c_str());
 		}
 
+		////////////////////////////////////////////////////////////////////////////////////////
+		// const DynamicPayloadTypes = [
+		//		    100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110,
+		//		    111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121,
+		//		    122, 123, 124, 125, 126, 127, 96, 97, 98, 99
+		//		];
+		//  
+		//	    [  client_codec_table_id -> server_codec_table_id]
+		// 
+		//		"mappedPayloadType":101,===>  config.js 编码类型 经过ortc.js 方法[generateRouterRtpCapabilities 中DynamicPayloadTypes数组]
+		// 都编码排序 的playloedType的类型 方法
+		//							"payloadType":108 // 对于客户端payloadType的类型 
+		//						 
+		////////////////////////////////////////////////////////////////////////////////////////
 		auto jsonRtpMappingIt = data.find("rtpMapping");
 
 		if (jsonRtpMappingIt == data.end() || !jsonRtpMappingIt->is_object())
@@ -287,6 +304,28 @@ namespace RTC
 			this->rtpMapping.codecs[jsonPayloadTypeIt->get<uint8_t>()] =
 			  jsonMappedPayloadTypeIt->get<uint8_t>();
 		}
+
+		////////////////////////////////////////////////////////////////////////////////////////////////////
+		//
+		//    对于js中代码 ortc.js 中getProducerRtpParametersMapping方法
+		//    // Generate encodings mapping.
+		//    // 就是一个随机种子 ssrc 
+		//    let mappedSsrc = utils.generateRandomNumber();
+		//    for (const encoding of params.encodings) {
+		//        const mappedEncoding = {};
+		//        mappedEncoding.mappedSsrc = mappedSsrc++;
+		//        if (encoding.rid)
+		//            mappedEncoding.rid = encoding.rid;
+		//        if (encoding.ssrc)
+		//            mappedEncoding.ssrc = encoding.ssrc;
+		//        if (encoding.scalabilityMode)
+		//            mappedEncoding.scalabilityMode = encoding.scalabilityMode;
+		//        rtpMapping.encodings.push(mappedEncoding);
+		//    }
+		//
+		//
+		//
+		////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		auto jsonEncodingsIt = jsonRtpMappingIt->find("encodings");
 
@@ -386,6 +425,7 @@ namespace RTC
 		}
 
 		// Fill RTP header extension ids.
+		// WebRTC 中扩展协议 ids
 		// This may throw.
 		for (auto& exten : this->rtpParameters.headerExtensions)
 		{
@@ -461,9 +501,13 @@ namespace RTC
 
 		// Set the RTCP report generation interval.
 		if (this->kind == RTC::Media::Kind::AUDIO)
+		{
 			this->maxRtcpInterval = RTC::RTCP::MaxAudioIntervalMs;
+		}
 		else
+		{
 			this->maxRtcpInterval = RTC::RTCP::MaxVideoIntervalMs;
+		}
 
 		// Create a KeyFrameRequestManager.
 		if (this->kind == RTC::Media::Kind::VIDEO)
@@ -1325,6 +1369,7 @@ namespace RTC
 		this->rtpStreamScores[encodingIdx]        = rtpStream->GetScore();
 
 		// Set the mapped SSRC.
+
 		this->mapRtpStreamMappedSsrc[rtpStream]             = encodingMapping.mappedSsrc;
 		this->mapMappedSsrcSsrc[encodingMapping.mappedSsrc] = ssrc;
 

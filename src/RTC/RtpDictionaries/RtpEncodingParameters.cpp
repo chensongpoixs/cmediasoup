@@ -109,7 +109,8 @@ namespace RTC
 		if (jsonDtxIt != data.end() && jsonDtxIt->is_boolean())
 			this->dtx = jsonDtxIt->get<bool>();
 
-		// scalabilityMode is optional.
+		// scalabilityMode is optional. 
+		// L3T3_KEY
 		if (jsonScalabilityModeIt != data.end() && jsonScalabilityModeIt->is_string())
 		{
 			std::string scalabilityMode = jsonScalabilityModeIt->get<std::string>();

@@ -1,4 +1,4 @@
-#define MS_CLASS "RTC::RtpStreamRecv"
+﻿#define MS_CLASS "RTC::RtpStreamRecv"
 // #define MS_LOG_DEV_LEVEL 3
 
 #include "RTC/RtpStreamRecv.hpp"
@@ -190,7 +190,9 @@ namespace RTC
 		MS_TRACE();
 
 		if (this->params.useNack)
+		{
 			this->nackGenerator.reset(new RTC::NackGenerator(this));
+		}
 
 		// Run the RTP inactivity periodic timer (use a different timeout if DTX is
 		// enabled).
@@ -198,9 +200,13 @@ namespace RTC
 		this->inactive                     = false;
 
 		if (!this->params.useDtx)
+		{
 			this->inactivityCheckPeriodicTimer->Start(InactivityCheckInterval);
+		}
 		else
+		{
 			this->inactivityCheckPeriodicTimer->Start(InactivityCheckIntervalWithDtx);
+		}
 	}
 
 	RtpStreamRecv::~RtpStreamRecv()

@@ -40,9 +40,13 @@ namespace RTC
 			auto& encoding = rtpParameters.encodings[0];
 
 			if (encoding.spatialLayers > 1 || encoding.temporalLayers > 1)
+			{
 				return RtpParameters::Type::SVC;
+			}
 			else
+			{
 				return RtpParameters::Type::SIMPLE;
+			}
 		}
 		else if (rtpParameters.encodings.size() > 1)
 		{
