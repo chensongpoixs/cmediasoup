@@ -1,4 +1,4 @@
-#define MS_CLASS "RTC::Parameters"
+﻿#define MS_CLASS "RTC::Parameters"
 // #define MS_LOG_DEV_LEVEL 3
 
 #include "RTC/Parameters.hpp"
@@ -50,7 +50,11 @@ namespace RTC
 		MS_TRACE();
 
 		MS_ASSERT(data.is_object(), "data is not an object");
-
+		/*
+					"level-asymmetry-allowed":1,
+                    "packetization-mode":1,
+                    "profile-level-id":"42e01f"
+		*/
 		for (json::iterator it = data.begin(); it != data.end(); ++it)
 		{
 			const std::string& key = it.key();

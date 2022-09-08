@@ -18,7 +18,34 @@ namespace RTC
 
 		if (!data.is_object())
 			MS_THROW_TYPE_ERROR("data is not an object");
-
+		/*
+		"encodings":[
+            {
+                "active":true,
+                "dtx":false,
+                "maxBitrate":500000,
+                "rid":"r0",
+                "scalabilityMode":"S1T3",
+                "scaleResolutionDownBy":4
+            },
+            {
+                "active":true,
+                "dtx":false,
+                "maxBitrate":1000000,
+                "rid":"r1",
+                "scalabilityMode":"S1T3",
+                "scaleResolutionDownBy":2
+            },
+            {
+                "active":true,
+                "dtx":false,
+                "maxBitrate":5000000,
+                "rid":"r2",
+                "scalabilityMode":"S1T3",
+                "scaleResolutionDownBy":1
+            }
+        ]
+		*/
 		auto jsonSsrcIt             = data.find("ssrc");
 		auto jsonRidIt              = data.find("rid");
 		auto jsonCodecPayloadTypeIt = data.find("codecPayloadType");

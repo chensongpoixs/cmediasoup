@@ -1,4 +1,4 @@
-#define MS_CLASS "RTC::Producer"
+﻿#define MS_CLASS "RTC::Producer"
 // #define MS_LOG_DEV_LEVEL 3
 
 #include "RTC/Producer.hpp"
@@ -865,7 +865,7 @@ namespace RTC
 
 		// Post-process the packet.
 		PostProcessRtpPacket(packet);
-
+		// 所有的订阅的客户端媒体信息
 		this->listener->OnProducerRtpPacketReceived(this, packet);
 
 		return result;

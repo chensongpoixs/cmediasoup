@@ -1,4 +1,4 @@
-/*
+﻿/*
  *  Copyright (c) 2014 The WebRTC project authors. All Rights Reserved.
  *
  *  Use of this source code is governed by a BSD-style license
@@ -246,7 +246,12 @@ void BitrateProber::ProbeSent(int64_t now_ms, size_t bytes) {
     TODO_PRINT_PROBING_STATE();
   }
 }
+/*
+根据网速和已经发送的数据量获得，大概算法是（已经发送的数据量/当前码率）+当前时间（代码中只有发送完成后调用，所以只发送完一段数据）。
+暂时不知道这样的意义，为什么消耗了多长时间就要等待多长时间？（补充，因为rtp发送无法知道是否成功发送，这里只是按照指定的网速一直发送，所以下次发送的时间 = 已发送的大小/码率）
 
+ 
+*/
 int64_t BitrateProber::GetNextProbeTime(const ProbeCluster& cluster) {
   // RTC_CHECK_GT(cluster.pace_info.send_bitrate_bps, 0);
   // RTC_CHECK_GE(cluster.time_started_ms, 0);

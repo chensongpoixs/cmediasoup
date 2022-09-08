@@ -1,4 +1,4 @@
-#define MS_CLASS "RTC::Transport"
+ï»¿#define MS_CLASS "RTC::Transport"
 // #define MS_LOG_DEV_LEVEL 3
 
 #include "RTC/Transport.hpp"
@@ -851,6 +851,7 @@ namespace RTC
 				// This may throw if a Producer with same id already exists.
 				try
 				{
+					//     æ’å…¥æˆ¿é—´ä¸­å»
 					this->listener->OnTransportNewProducer(this, producer);
 				}
 				catch (const MediaSoupError& error)
@@ -1458,7 +1459,7 @@ namespace RTC
 						newTraceEventTypes.probation = true;
 					if (typeStr == "bwe")
 					{
-						//¶©ÔÄÁ÷Á¿ĞÅÏ¢ 
+						//è®¢é˜…æµé‡ä¿¡æ¯ 
 						newTraceEventTypes.bwe = true;
 					}
 				}

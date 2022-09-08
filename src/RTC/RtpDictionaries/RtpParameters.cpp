@@ -91,7 +91,145 @@ namespace RTC
 
 		if (!data.is_object())
 			MS_THROW_TYPE_ERROR("data is not an object");
+		/*
+		 {
+"rtpParameters":{
+        "codecs":[
+            {
+                "clockRate":90000,
+                "mimeType":"video/H264",
+                "parameters":{
+                    "level-asymmetry-allowed":1,
+                    "packetization-mode":1,
+                    "profile-level-id":"42e01f"
+                },
+                "payloadType":108,
+                "rtcpFeedback":[
+                    {
+                        "parameter":"",
+                        "type":"goog-remb"
+                    },
+                    {
+                        "parameter":"",
+                        "type":"transport-cc"
+                    },
+                    {
+                        "parameter":"fir",
+                        "type":"ccm"
+                    },
+                    {
+                        "parameter":"",
+                        "type":"nack"
+                    },
+                    {
+                        "parameter":"pli",
+                        "type":"nack"
+                    }
+                ]
+            },
+            {
+                "clockRate":90000,
+                "mimeType":"video/rtx",
+                "parameters":{
+                    "apt":108
+                },
+                "payloadType":109,
+                "rtcpFeedback":[
 
+                ]
+            }
+        ],
+        "encodings":[
+            {
+                "active":true,
+                "dtx":false,
+                "maxBitrate":500000,
+                "rid":"r0",
+                "scalabilityMode":"S1T3",
+                "scaleResolutionDownBy":4
+            },
+            {
+                "active":true,
+                "dtx":false,
+                "maxBitrate":1000000,
+                "rid":"r1",
+                "scalabilityMode":"S1T3",
+                "scaleResolutionDownBy":2
+            },
+            {
+                "active":true,
+                "dtx":false,
+                "maxBitrate":5000000,
+                "rid":"r2",
+                "scalabilityMode":"S1T3",
+                "scaleResolutionDownBy":1
+            }
+        ],
+        "headerExtensions":[
+            {
+                "encrypt":false,
+                "id":4,
+                "parameters":{
+
+                },
+                "uri":"urn:ietf:params:rtp-hdrext:sdes:mid"
+            },
+            {
+                "encrypt":false,
+                "id":10,
+                "parameters":{
+
+                },
+                "uri":"urn:ietf:params:rtp-hdrext:sdes:rtp-stream-id"
+            },
+            {
+                "encrypt":false,
+                "id":11,
+                "parameters":{
+
+                },
+                "uri":"urn:ietf:params:rtp-hdrext:sdes:repaired-rtp-stream-id"
+            },
+            {
+                "encrypt":false,
+                "id":2,
+                "parameters":{
+
+                },
+                "uri":"http://www.webrtc.org/experiments/rtp-hdrext/abs-send-time"
+            },
+            {
+                "encrypt":false,
+                "id":3,
+                "parameters":{
+
+                },
+                "uri":"http://www.ietf.org/id/draft-holmer-rmcat-transport-wide-cc-extensions-01"
+            },
+            {
+                "encrypt":false,
+                "id":13,
+                "parameters":{
+
+                },
+                "uri":"urn:3gpp:video-orientation"
+            },
+            {
+                "encrypt":false,
+                "id":14,
+                "parameters":{
+
+                },
+                "uri":"urn:ietf:params:rtp-hdrext:toffset"
+            }
+        ],
+        "mid":"2",
+        "rtcp":{
+            "cname":"UgYi3789TL6C/8Zx",
+            "reducedSize":true
+        }
+    }}
+		*/
 		auto jsonMidIt              = data.find("mid");
 		auto jsonCodecsIt           = data.find("codecs");
 		auto jsonEncodingsIt        = data.find("encodings");

@@ -1,4 +1,4 @@
-#ifndef MS_RTC_RTP_PACKET_HPP
+﻿#ifndef MS_RTC_RTP_PACKET_HPP
 #define MS_RTC_RTP_PACKET_HPP
 
 #include "common.hpp"
@@ -609,8 +609,8 @@ namespace RTC
 		// Passed by argument.
 		Header* header{ nullptr };
 		uint8_t* csrcList{ nullptr };
-		HeaderExtension* headerExtension{ nullptr };
-		std::map<uint8_t, OneByteExtension*> mapOneByteExtensions;
+		HeaderExtension* headerExtension{ nullptr };   // rtp中扩展头 
+		std::map<uint8_t, OneByteExtension*> mapOneByteExtensions;   
 		std::map<uint8_t, TwoBytesExtension*> mapTwoBytesExtensions;
 		uint8_t midExtensionId{ 0u };
 		uint8_t ridExtensionId{ 0u };

@@ -1,4 +1,4 @@
-/*
+﻿/*
  *  Copyright (c) 2017 The WebRTC project authors. All Rights Reserved.
  *
  *  Use of this source code is governed by a BSD-style license
@@ -238,7 +238,7 @@ void RtpTransportControllerSend::OnTransportFeedback(
   absl::optional<TransportPacketsFeedback> feedback_msg =
       transport_feedback_adapter_.ProcessTransportFeedback(
           feedback, Timestamp::ms(DepLibUV::GetTimeMsInt64()));
-  if (feedback_msg)
+  if (feedback_msg)//从cc-controller中获取目标码率进行设置
     PostUpdates(controller_->OnTransportPacketsFeedback(*feedback_msg));
   pacer_.UpdateOutstandingData(
       transport_feedback_adapter_.GetOutstandingData().bytes());
@@ -298,12 +298,12 @@ void RtpTransportControllerSend::UpdateStreamsConfig() {
 
 void RtpTransportControllerSend::PostUpdates(NetworkControlUpdate update) {
   if (update.congestion_window) {
-    if (update.congestion_window->IsFinite())
+    if (update.congestion_window->IsFinite())// 设置拥塞窗口大小
       pacer_.SetCongestionWindow(update.congestion_window->bytes());
     else
       pacer_.SetCongestionWindow(PacedSender::kNoCongestionWindow);
   }
-  if (update.pacer_config) {
+  if (update.pacer_config) { // 设置平滑发送速率
     pacer_.SetPacingRates(update.pacer_config->data_rate().bps(),
                           update.pacer_config->pad_rate().bps());
   }
@@ -313,10 +313,12 @@ void RtpTransportControllerSend::PostUpdates(NetworkControlUpdate update) {
 
   for (const auto& probe : update.probe_cluster_configs) {
     int64_t bitrate_bps = probe.target_data_rate.bps();
-    pacer_.CreateProbeCluster(bitrate_bps, probe.id);
+    pacer_.CreateProbeCluster(bitrate_bps, probe.id);// 按照probe_cluster_config生成探测簇
   }
   if (update.target_rate) {
+	  // 目标码率更新了，生成目标码率
     control_handler_->SetTargetRate(*update.target_rate);
+	  // 更新码率分配
     UpdateControlState();
   }
 }
@@ -331,11 +333,12 @@ void RtpTransportControllerSend::OnReceivedRtcpReceiverReportBlocks(
   int total_packets_delta = 0;
 
   // Compute the packet loss from all report blocks.
-  for (const RTCPReportBlock& report_block : report_blocks) {
+  for (const RTCPReportBlock& report_block : report_blocks) 
+  {
     auto it = last_report_blocks_.find(report_block.source_ssrc);
-    if (it != last_report_blocks_.end()) {
-      auto number_of_packets = report_block.extended_highest_sequence_number -
-                               it->second.extended_highest_sequence_number;
+    if (it != last_report_blocks_.end()) 
+	{
+      auto number_of_packets = report_block.extended_highest_sequence_number - it->second.extended_highest_sequence_number;
       total_packets_delta += number_of_packets;
       auto lost_delta = report_block.packets_lost - it->second.packets_lost;
       total_packets_lost_delta += lost_delta;

@@ -1,4 +1,4 @@
-#ifndef MS_RTC_RATE_CALCULATOR_HPP
+ï»¿#ifndef MS_RTC_RATE_CALCULATOR_HPP
 #define MS_RTC_RATE_CALCULATOR_HPP
 
 #include "common.hpp"
@@ -12,9 +12,9 @@ namespace RTC
 	class RateCalculator
 	{
 	public:
-		static constexpr size_t DefaultWindowSize{ 1000u };   // Ä¬ÈÏ»¬¶¯´°¿ÚÕ¼ÓĞºÁÃëÊı
-		static constexpr float DefaultBpsScale{ 8000.0f };    // ±ÈÌØÁ÷
-		static constexpr uint16_t DefaultWindowItems{ 100u }; // »¬¶¯´°¿ÚÓĞ¶àÉÙ¸ö
+		static constexpr size_t DefaultWindowSize{ 1000u };   // é»˜è®¤æ»‘åŠ¨çª—å£å æœ‰æ¯«ç§’æ•°
+		static constexpr float DefaultBpsScale{ 8000.0f };    // æ¯”ç‰¹æµ
+		static constexpr uint16_t DefaultWindowItems{ 100u }; // æ»‘åŠ¨çª—å£æœ‰å¤šå°‘ä¸ª
 
 	public:
 		RateCalculator(
@@ -57,25 +57,25 @@ namespace RTC
 
 	private:
 		// Window Size (in milliseconds).
-		size_t windowSizeMs{ DefaultWindowSize }; // »¬¶¯´°¿ÚµÄ´óĞ¡ºÁÃëÊı
+		size_t windowSizeMs{ DefaultWindowSize }; // æ»‘åŠ¨çª—å£çš„å¤§å°æ¯«ç§’æ•°
 		// Scale in which the rate is represented.
-		float scale{ DefaultBpsScale }; // ±íÊ¾±ÈÂÊµÄ¿Ì¶È¡£
+		float scale{ DefaultBpsScale }; // è¡¨ç¤ºæ¯”ç‡çš„åˆ»åº¦ã€‚
 		// Window Size (number of items).
-		uint16_t windowItems{ DefaultWindowItems }; // »¬¶¯´°¿ÚµÄÊı×é¸öÊı
+		uint16_t windowItems{ DefaultWindowItems }; // æ»‘åŠ¨çª—å£çš„æ•°ç»„ä¸ªæ•°
 		// Item Size (in milliseconds), calculated as: windowSizeMs / windowItems.
-		size_t itemSizeMs{ 0u }; // Ã¿¸ö»¬¶¯´°¿ÚÕ¼ÓĞºÁÃëÊı
+		size_t itemSizeMs{ 0u }; // æ¯ä¸ªæ»‘åŠ¨çª—å£å æœ‰æ¯«ç§’æ•°
 		// Buffer to keep data.
-		std::unique_ptr<BufferItem[]> buffer; // »¬¶¯´°¿ÚµÄÊı×é¼ÇÂ¼Êı¾İ¼¯
+		std::unique_ptr<BufferItem[]> buffer; // æ»‘åŠ¨çª—å£çš„æ•°ç»„è®°å½•æ•°æ®é›†
 		// Time (in milliseconds) for last item in the time window.
-		uint64_t newestItemStartTime{ 0u }; // µ±Ç°×îĞÂ´°¿ÚµÄÊ±¼äºÁÃëÊı
+		uint64_t newestItemStartTime{ 0u }; // å½“å‰æœ€æ–°çª—å£çš„æ—¶é—´æ¯«ç§’æ•°
 		// Index for the last item in the time window.
-		int32_t newestItemIndex{ -1 }; // ×îĞÂµÄ´°¿ÚµÄÏÂ±ê
+		int32_t newestItemIndex{ -1 }; // æœ€æ–°çš„çª—å£çš„ä¸‹æ ‡
 		// Time (in milliseconds) for oldest item in the time window.
-		uint64_t oldestItemStartTime{ 0u }; // ×ÜÊÇ¼ÇÂ¼»¬¶¯´°¿ÚÖĞ×îĞ¡ºÁÃëÊı
+		uint64_t oldestItemStartTime{ 0u }; // æ€»æ˜¯è®°å½•æ»‘åŠ¨çª—å£ä¸­æœ€å°æ¯«ç§’æ•°
 		// Index for the oldest item in the time window.
-		int32_t oldestItemIndex{ -1 }; // ×îÀÏµÄÏÂ±ê
+		int32_t oldestItemIndex{ -1 }; // æœ€è€çš„ä¸‹æ ‡
 		// Total count in the time window.
-		size_t totalCount{ 0u }; // Êı¾İÍ¬ºÍµ±Ç°
+		size_t totalCount{ 0u }; // æ•°æ®åŒå’Œå½“å‰
 		// Total bytes transmitted.
 		size_t bytes{ 0u };
 		// Last value calculated by GetRate().

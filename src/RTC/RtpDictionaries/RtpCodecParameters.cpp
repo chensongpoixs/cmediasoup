@@ -1,4 +1,4 @@
-#define MS_CLASS "RTC::RtpCodecParameters"
+﻿#define MS_CLASS "RTC::RtpCodecParameters"
 // #define MS_LOG_DEV_LEVEL 3
 
 #include "Logger.hpp"
@@ -16,12 +16,17 @@ namespace RTC
 
 		if (!data.is_object())
 			MS_THROW_TYPE_ERROR("data is not an object");
-
+		// 1. 媒体数据 什么编码
 		auto jsonMimeTypeIt     = data.find("mimeType");
+		// 2. 媒体类型
 		auto jsonPayloadTypeIt  = data.find("payloadType");
+		// 3. 时钟中断
 		auto jsonClockRateIt    = data.find("clockRate");
+		// 4. 音频的通道数 , 视频中没有该字段
 		auto jsonChannelsIt     = data.find("channels");
+		// 5. 视频编码参数 设置
 		auto jsonParametersIt   = data.find("parameters");
+		// 6. feedback 网络评估支持 算法
 		auto jsonRtcpFeedbackIt = data.find("rtcpFeedback");
 
 		// mimeType is mandatory.
@@ -42,7 +47,7 @@ namespace RTC
 		{
 			MS_THROW_TYPE_ERROR("missing payloadType");
 		}
-
+		// 媒体类型
 		this->payloadType = jsonPayloadTypeIt->get<uint8_t>();
 
 		// clockRate is mandatory.
@@ -55,7 +60,7 @@ namespace RTC
 		{
 			MS_THROW_TYPE_ERROR("missing clockRate");
 		}
-
+		// 时钟中断
 		this->clockRate = jsonClockRateIt->get<uint32_t>();
 
 		// channels is optional.

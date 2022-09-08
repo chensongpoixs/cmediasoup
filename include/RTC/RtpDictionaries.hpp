@@ -1,4 +1,4 @@
-#ifndef MS_RTC_RTP_DICTIONARIES_HPP
+﻿#ifndef MS_RTC_RTP_DICTIONARIES_HPP
 #define MS_RTC_RTP_DICTIONARIES_HPP
 
 #include "common.hpp"
@@ -177,7 +177,7 @@ namespace RTC
 		uint8_t payloadType{ 0u };
 		uint32_t clockRate{ 0u };
 		uint8_t channels{ 1u };
-		RTC::Parameters parameters;
+		RTC::Parameters parameters;// 音频的编码的参数
 		std::vector<RtcpFeedback> rtcpFeedback;
 	};
 
