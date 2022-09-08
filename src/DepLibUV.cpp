@@ -8,7 +8,7 @@
 /* Static variables. */
 
 thread_local uv_loop_t* DepLibUV::loop{ nullptr };
-
+//thread_local static uv_loop_t* loop;
 /* Static methods for UV callbacks. */
 
 inline static void onClose(uv_handle_t* handle)

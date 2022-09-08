@@ -1,4 +1,4 @@
-#define MS_CLASS "RTC::RtpHeaderExtensionParameters"
+﻿#define MS_CLASS "RTC::RtpHeaderExtensionParameters"
 // #define MS_LOG_DEV_LEVEL 3
 
 #include "Logger.hpp"

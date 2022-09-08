@@ -541,6 +541,7 @@ namespace RTC
 		{
 			case Channel::ChannelRequest::MethodId::TRANSPORT_CONNECT:
 			{
+
 				/*data = 
 				{
 					"dtlsParameters":
@@ -994,19 +995,31 @@ namespace RTC
 		// Check if it's STUN.
 		if (RTC::StunPacket::IsStun(data, len))
 		{
+//<<<<<<< HEAD
+//			DEBUG_EX_LOG("stun");
+//=======
 			DEBUG_EX_ID_LOG("stun");
+//>>>>>>> d40fa1c367378f962a8c8dd093974a106997055a
 			OnStunDataReceived(tuple, data, len);
 		}
 		// Check if it's RTCP.
 		else if (RTC::RTCP::Packet::IsRtcp(data, len))
 		{
+//<<<<<<< HEAD
+//			DEBUG_EX_LOG("IsRtcp");
+//=======
 			DEBUG_EX_ID_LOG("IsRtcp");
+//>>>>>>> d40fa1c367378f962a8c8dd093974a106997055a
 			OnRtcpDataReceived(tuple, data, len);
 		}
 		// Check if it's RTP.
 		else if (RTC::RtpPacket::IsRtp(data, len))
 		{
+//<<<<<<< HEAD
+//			DEBUG_EX_LOG("IsRtp");
+//=======
 			DEBUG_EX_ID_LOG("IsRtp");
+//>>>>>>> d40fa1c367378f962a8c8dd093974a106997055a
 			OnRtpDataReceived(tuple, data, len);
 		}
 		// Check if it's DTLS.
@@ -1015,13 +1028,21 @@ namespace RTC
 //<<<<<<< HEAD
 //			DEBUG_EX_LOG("IsDtls");
 //=======
+//<<<<<<< HEAD
+//			DEBUG_EX_LOG("IsDtls");
+//=======
 			DEBUG_EX_ID_LOG("IsDtls"); // 这边修改DTLS的状态的哈 ？？
 //>>>>>>> 69463cce016535ae4b8531ff725a35bc270954e5
+//>>>>>>> d40fa1c367378f962a8c8dd093974a106997055a
 			OnDtlsDataReceived(tuple, data, len);
 		}
 		else
 		{
+//<<<<<<< HEAD
+//			DEBUG_EX_LOG("error type");
+//=======
 			DEBUG_EX_ID_LOG("error type");
+//>>>>>>> d40fa1c367378f962a8c8dd093974a106997055a
 			MS_WARN_DEV("ignoring received packet of unknown type");
 		}
 	}
@@ -1439,10 +1460,14 @@ namespace RTC
 
 			return;
 		}
+//<<<<<<< HEAD
+//		DEBUG_EX_LOG("len = %lu", len);
+//=======
 		DEBUG_EX_LOG("len = %lu", len); 
 
 		// TODO@chensong 20220522     
 		//TLSv1.3 发送 Server Hello、 Certificate、Certificate Status、 Server key Exchange、 Server Hello Done
+//>>>>>>> d40fa1c367378f962a8c8dd093974a106997055a
 		this->iceServer->GetSelectedTuple()->Send(data, len);
 
 		// Increase send transmission.

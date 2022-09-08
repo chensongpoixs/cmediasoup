@@ -1,4 +1,4 @@
-#ifndef MS_RTC_DTLS_TRANSPORT_HPP
+﻿#ifndef MS_RTC_DTLS_TRANSPORT_HPP
 #define MS_RTC_DTLS_TRANSPORT_HPP
 
 #include "common.hpp"
@@ -220,7 +220,7 @@ namespace RTC
 		DtlsState state{ DtlsState::NEW };
 		Role localRole{ Role::NONE };
 		Fingerprint remoteFingerprint;
-		bool handshakeDone{ false };
+		bool handshakeDone{ false }; // 生成 
 		bool handshakeDoneNow{ false };
 		std::string remoteCert;
 	};

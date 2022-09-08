@@ -758,6 +758,7 @@ namespace RTC
 
 		// The remote fingerpring may have been set after DTLS handshake was done,
 		// so we may need to process it now.
+		// TODO@chensong 20220809 ---  正常情况下是不会这个流程的 只有ICE重置时或者重新链接
 		if (this->handshakeDone && this->state != DtlsState::CONNECTED)
 		{
 			MS_DEBUG_TAG(dtls, "handshake already done, processing it right now");

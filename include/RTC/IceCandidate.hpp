@@ -1,4 +1,4 @@
-#ifndef MS_RTC_ICE_CANDIDATE_HPP
+﻿#ifndef MS_RTC_ICE_CANDIDATE_HPP
 #define MS_RTC_ICE_CANDIDATE_HPP
 
 #include "common.hpp"

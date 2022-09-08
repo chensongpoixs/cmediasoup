@@ -266,8 +266,8 @@ namespace RTC
 		size_t weight{ 0 };
 		size_t samples{ 0 };
 		size_t totalScore{ 0 };
-		// ¼ÓÈ¨Æ½¾ùÊý  ¼ÆËã ¹þ
-		// 1. È¨ÖØÔ½´ó ÅÐ¶ÏµÄÕ¼ÓÐ±êÁ¿Ô½´ó¹þ 
+		// ï¿½ï¿½È¨Æ½ï¿½ï¿½ï¿½ï¿½  ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
+		// 1. È¨ï¿½ï¿½Ô½ï¿½ï¿½ ï¿½Ð¶Ïµï¿½Õ¼ï¿½Ð±ï¿½ï¿½ï¿½Ô½ï¿½ï¿½ï¿½ 
 		for (auto score : this->scores)
 		{
 			weight++;
@@ -277,7 +277,7 @@ namespace RTC
 
 		// clang-tidy "thinks" that this can lead to division by zero but we are
 		// smarter.
-		// NOLINTNEXTLINE(clang-analyzer-core.DivideZero) // Round º¯Êý¼´ËÄÉáÎåÈëÈ¡Å¼¡£
+		// NOLINTNEXTLINE(clang-analyzer-core.DivideZero) // Round ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¡Å¼ï¿½ï¿½
 		this->score = static_cast<uint8_t>(std::round(static_cast<double>(totalScore) / samples));
 
 		// Call the listener if the global score has changed.

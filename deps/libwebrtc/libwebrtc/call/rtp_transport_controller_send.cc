@@ -238,8 +238,16 @@ void RtpTransportControllerSend::OnTransportFeedback(
   absl::optional<TransportPacketsFeedback> feedback_msg =
       transport_feedback_adapter_.ProcessTransportFeedback(
           feedback, Timestamp::ms(DepLibUV::GetTimeMsInt64()));
-  if (feedback_msg)//从cc-controller中获取目标码率进行设置
-    PostUpdates(controller_->OnTransportPacketsFeedback(*feedback_msg));
+//<<<<<<< HEAD
+//  if (feedback_msg)//从cc-controller中获取目标码率进行设置
+//    PostUpdates(controller_->OnTransportPacketsFeedback(*feedback_msg));
+//=======
+	if (feedback_msg)
+	{
+		// 最终通过RtpTransportControllerSend将feedback转发到GoogCcNetworkController进行码率预估后
+		PostUpdates(controller_->OnTransportPacketsFeedback(*feedback_msg));
+	}
+//>>>>>>> f8c7f1941b7bb51b4703c78576e1474ab962f554
   pacer_.UpdateOutstandingData(
       transport_feedback_adapter_.GetOutstandingData().bytes());
 }
@@ -267,12 +275,11 @@ void RtpTransportControllerSend::MaybeCreateControllers() {
 
   control_handler_ = absl::make_unique<CongestionControlHandler>();
 
-  initial_config_.constraints.at_time =
-      Timestamp::ms(DepLibUV::GetTimeMsInt64());
-
+  initial_config_.constraints.at_time = Timestamp::ms(DepLibUV::GetTimeMsInt64());
+	// 创建GoogCcNetworkController
   controller_ = controller_factory_override_->Create(initial_config_);
   process_interval_ = controller_factory_override_->GetProcessInterval();
-
+	// 间隔更新GoogCcNetworkController
   UpdateControllerWithTimeInterval();
 }
 
@@ -284,7 +291,12 @@ void RtpTransportControllerSend::UpdateControllerWithTimeInterval() {
 
   ProcessInterval msg;
   msg.at_time = Timestamp::ms(DepLibUV::GetTimeMsInt64());
+	// 对码率进行检测和更新，将结果转发给pacer
+	/**
+	 * 调用GoogCcNetworkController::OnProcessInterval()做间隔的码率检测和更新
 
+调用PostUpdates()将最新的码率给转发到pacer
+	 */
   PostUpdates(controller_->OnProcessInterval(msg));
 }
 

@@ -1459,7 +1459,11 @@ namespace RTC
 						newTraceEventTypes.probation = true;
 					if (typeStr == "bwe")
 					{
+//<<<<<<< HEAD
 						//订阅流量信息 
+//=======
+						//??????????? 
+//>>>>>>> f8c7f1941b7bb51b4703c78576e1474ab962f554
 						newTraceEventTypes.bwe = true;
 					}
 				}
@@ -2459,7 +2463,7 @@ namespace RTC
 			{
 				MS_DEBUG_TAG(
 				  rtcp,
-				  "unhandled RTCP type received [type:%" PRIu8 "]",
+				  "unhandled RTCP type received [type:%"  "]",
 				  static_cast<uint8_t>(packet->GetType()));
 			}
 		}

@@ -116,11 +116,13 @@ namespace RTC
 		}
 
 	public:
+		// audio or video 
 		Type type{ Type::UNSET };
+		// audio or video ecodec 
 		Subtype subtype{ Subtype::UNSET };
 
 	private:
-		std::string mimeType;
+		std::string mimeType; //[video/H264]
 	};
 
 	class RtpHeaderExtensionUri

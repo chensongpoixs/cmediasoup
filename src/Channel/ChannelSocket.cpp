@@ -21,7 +21,7 @@ namespace Channel
 	static constexpr size_t NsMessageMaxLen{ 4194313 };
 	static constexpr size_t NsPayloadMaxLen{ 4194304 };
 
-	/* Instance methods. */
+	/* Instance methods.  消费者模式 */
 	ChannelSocket::ChannelSocket(int consumerFd, int producerFd)
 	  : consumerSocket(consumerFd, NsMessageMaxLen, this), producerSocket(producerFd, NsMessageMaxLen)
 	{

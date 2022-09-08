@@ -14,6 +14,35 @@
 #define __builtin_popcount __popcnt
 #endif
 #include <mutex>
+//<<<<<<< HEAD
+using json = nlohmann::json;
+
+//static std::string out_file_name = "./log/" + std::to_string(::time(NULL)) + ".log";
+//static FILE* out_file_ptr = ::fopen(out_file_name.c_str(), "wb+");
+//static std::mutex g_mutex;
+//typedef std::lock_guard<std::mutex> clock_guard;
+//
+//static void var_log( const char* format, ...)
+//{
+//	if (out_file_ptr)
+//	{
+//		clock_guard lock(g_mutex);
+//		va_list ap;
+//		va_start(ap, format);
+//		static const uint32_t buffer_size = 1024 * 1024;
+//		static char buffer[buffer_size] = {0};
+//		size_t len = vsnprintf(static_cast<char*>(&buffer[0]), buffer_size, format, ap);
+//		//g_log_ptr->append_var(level, format, ap);
+//		::fprintf(out_file_ptr, "%s", std::string(buffer, len).c_str());
+//		::fprintf(out_file_ptr,  "\n");
+//		::fflush(out_file_ptr);
+//		va_end(ap);
+//	}
+//}
+//#define DEBUG_LOG(format, ...)		var_log(format, ##__VA_ARGS__)
+//#define DEBUG_EX_LOG(format, ...)		DEBUG_LOG("[%s][%d]" format, __FUNCTION__, __LINE__, ##__VA_ARGS__)
+
+//=======
 #include <stdio.h>
 using json = nlohmann::json;
 
@@ -23,6 +52,7 @@ void var_log( const char* format, ...);
 #define DEBUG_EX_LOG(format, ...)		DEBUG_LOG("[%s][%d] " format, __FUNCTION__, __LINE__, ##__VA_ARGS__)
 #define INFO_EX_LOG(format, ...)		DEBUG_LOG("[%s][%d][info] " format, __FUNCTION__, __LINE__, ##__VA_ARGS__)
 #define DEBUG_EX_ID_LOG(format, ...)		DEBUG_LOG("[%s][%d][%s] " format, __FUNCTION__, __LINE__, id.c_str(),  ##__VA_ARGS__)
+//>>>>>>> d40fa1c367378f962a8c8dd093974a106997055a
 namespace Utils
 {
 	class IP

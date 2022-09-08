@@ -383,6 +383,7 @@ namespace RTC
 
 			case Channel::ChannelRequest::MethodId::RTP_OBSERVER_ADD_PRODUCER:
 			{
+				// audio add producer
 				// This may throw.
 				RTC::RtpObserver* rtpObserver = GetRtpObserverFromInternal(request->internal);
 				RTC::Producer* producer       = GetProducerFromData(request->data);
@@ -705,7 +706,8 @@ namespace RTC
 
 			consumer->SendRtpPacket(packet);
 		}
-
+		//////////////////////////////////////////////////////////////
+		/////////////////////////////////////////////////////////////////
 		auto it = this->mapProducerRtpObservers.find(producer);
 
 		if (it != this->mapProducerRtpObservers.end())

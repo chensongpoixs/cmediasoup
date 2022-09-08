@@ -6,6 +6,9 @@
  *  tree. An additional intellectual property rights grant can be found
  *  in the file PATENTS.  All contributing project authors may
  *  be found in the AUTHORS file in the root of the source tree.
+ *
+ *
+ *  作为整个码率预估及调整的核心
  */
 
 #ifndef MODULES_CONGESTION_CONTROLLER_GOOG_CC_GOOG_CC_NETWORK_CONTROL_H_
@@ -88,16 +91,28 @@ class GoogCcNetworkController : public NetworkControllerInterface {
   const bool use_min_allocatable_as_lower_bound_;
   const RateControlSettings rate_control_settings_;
 
+	// 探测控制器，通过目标码率判断下次是否探测，探测码率大小
   const std::unique_ptr<ProbeController> probe_controller_;
-  const std::unique_ptr<CongestionWindowPushbackController>
-      congestion_window_pushback_controller_;
+	//基于当前的rtt设置一个时间窗口，同时基于当前的码率设置当前时间窗口下的数据量，
+	// 通过判断当前窗口的使用量，如果使用量过大的时候，降低编码时使用的目标码率，加速窗口消退，减少延迟
+  const std::unique_ptr<CongestionWindowPushbackController>  congestion_window_pushback_controller_;
 
+	//  基于丢包计算预估码率，结合延迟预估码率，得到最终的目标码率
   std::unique_ptr<SendSideBandwidthEstimation> bandwidth_estimation_;
+	// 应用(码率)受限检测，检测当前的发送码率是否和目标码率由于编码器等原因相差过大受限了，受限情况下会触发带宽预测过程的特殊处理
   std::unique_ptr<AlrDetector> alr_detector_;
+	//根据feedback计算探测码率，PacingController中会将包按照cluster进行划分，
+	// transport-CC报文能得到包所属的cluster以及发送和接收信息，
+	// 通过发送和接收的数据大小比判断是否到达链路上限从而进行带宽探测
   std::unique_ptr<ProbeBitrateEstimator> probe_bitrate_estimator_;
+	// NetworkStateEstimator 、 NetworkStatePredictor ： 此两者属于待开发类，只是在代码中有，但是还没开发完，没用上.
   std::unique_ptr<NetworkStateEstimator> network_estimator_;
   std::unique_ptr<NetworkStatePredictor> network_state_predictor_;
+	// 基于延迟预估码率
+	// ---> TrendlineEstimator : 使用线性回归计算当前网络拥堵情况
+	// ---> AimdRateControl : 通过TrendLine预测出来的网络状态对码率进行aimd方式调整
   std::unique_ptr<DelayBasedBwe> delay_based_bwe_;
+	// 估算当前的吞吐量 --> BitrateEstimator :使用滑动窗口 + 卡尔曼滤波计算当前发送吞吐量
   std::unique_ptr<AcknowledgedBitrateEstimator> acknowledged_bitrate_estimator_;
 
   absl::optional<NetworkControllerConfig> initial_config_;
