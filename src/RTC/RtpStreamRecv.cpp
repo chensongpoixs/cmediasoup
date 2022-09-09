@@ -261,7 +261,9 @@ namespace RTC
 
 		// Process the packet at codec level.
 		if (packet->GetPayloadType() == GetPayloadType())
+		{
 			RTC::Codecs::Tools::ProcessRtpPacket(packet, GetMimeType());
+		}
 
 		// Pass the packet to the NackGenerator.
 		if (this->params.useNack)
@@ -300,7 +302,9 @@ namespace RTC
 
 		// Restart the inactivityCheckPeriodicTimer.
 		if (this->inactivityCheckPeriodicTimer)
+		{
 			this->inactivityCheckPeriodicTimer->Restart();
+		}
 
 		return true;
 	}
@@ -823,13 +827,18 @@ namespace RTC
 
 			seq = *it;
 			++it;
-
+			//////////////////////////////////////////////////////////////
+			//[uint16_t ]	[uint16_t]
+			//[seq]			[0000 0000 0000 0000 ]
+			//////////////////////////////////////////////////////////////
 			while (it != end)
 			{
 				uint16_t shift = *it - seq - 1;
 
 				if (shift > 15)
+				{
 					break;
+				}
 
 				bitmask |= (1 << shift);
 				++it;
@@ -849,8 +858,9 @@ namespace RTC
 
 			return;
 		}
-
+		// 发送feedback 个数
 		this->nackCount++;
+		// 发送一共nack个数
 		this->nackPacketCount += numPacketsRequested;
 
 		packet.Serialize(RTC::RTCP::Buffer);

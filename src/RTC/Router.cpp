@@ -702,7 +702,9 @@ namespace RTC
 			const auto& mid = consumer->GetRtpParameters().mid;
 
 			if (!mid.empty())
+			{
 				packet->UpdateMid(mid);
+			}
 
 			consumer->SendRtpPacket(packet);
 		}

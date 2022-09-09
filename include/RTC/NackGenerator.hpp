@@ -1,4 +1,4 @@
-#ifndef MS_RTC_NACK_GENERATOR_HPP
+﻿#ifndef MS_RTC_NACK_GENERATOR_HPP
 #define MS_RTC_NACK_GENERATOR_HPP
 
 #include "common.hpp"
@@ -60,6 +60,11 @@ namespace RTC
 		void Reset();
 
 	private:
+		/**
+		* nack 计算上一个和下包之间有几个包接受到
+		* seq是有序的   对没有接受到包检查在RTX中是否接受到没有接受到就放到nacklist表中表示丢包了
+		*
+		*/
 		void AddPacketsToNackList(uint16_t seqStart, uint16_t seqEnd);
 		bool RemoveNackItemsUntilKeyFrame();
 		std::vector<uint16_t> GetNackBatch(NackFilter filter);
@@ -75,9 +80,9 @@ namespace RTC
 		// Allocated by this.
 		Timer* timer{ nullptr };
 		// Others.
-		std::map<uint16_t, NackInfo, RTC::SeqManager<uint16_t>::SeqLowerThan> nackList;
-		std::set<uint16_t, RTC::SeqManager<uint16_t>::SeqLowerThan> keyFrameList;
-		std::set<uint16_t, RTC::SeqManager<uint16_t>::SeqLowerThan> recoveredList;
+		std::map<uint16_t, NackInfo, RTC::SeqManager<uint16_t>::SeqLowerThan> nackList;  // 丢包队列
+		std::set<uint16_t, RTC::SeqManager<uint16_t>::SeqLowerThan> keyFrameList;  
+		std::set<uint16_t, RTC::SeqManager<uint16_t>::SeqLowerThan> recoveredList;  //丢包重传RTX队列中
 		bool started{ false };
 		uint16_t lastSeq{ 0u }; // Seq number of last valid packet.
 		uint32_t rtt{ 0u };     // Round trip time (ms).

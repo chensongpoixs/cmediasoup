@@ -128,6 +128,11 @@ namespace RTC
 		void RequestKeyFrame(uint32_t mappedSsrc);
 
 	private:
+		/**
+		* 1. 正常ssrc流的数据
+		* 2. RTX重传ssrc流的数据
+		* 3. rid ???
+		*/
 		RTC::RtpStreamRecv* GetRtpStream(RTC::RtpPacket* packet);
 		RTC::RtpStreamRecv* CreateRtpStream(
 		  RTC::RtpPacket* packet, const RTC::RtpCodecParameters& mediaCodec, size_t encodingIdx);

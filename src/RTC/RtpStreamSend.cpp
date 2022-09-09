@@ -79,11 +79,15 @@ namespace RTC
 
 		// Call the parent method.
 		if (!RtpStream::ReceivePacket(packet))
+		{
 			return false;
+		}
 
 		// If bufferSize was given, store the packet into the buffer.
 		if (!this->storage.empty())
+		{
 			StorePacket(packet);
+		}
 
 		// Increase transmission counter.
 		this->transmissionCounter.Update(packet);

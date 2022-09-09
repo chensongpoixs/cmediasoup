@@ -1,4 +1,4 @@
-#define MS_CLASS "RTC::NackGenerator"
+﻿#define MS_CLASS "RTC::NackGenerator"
 // #define MS_LOG_DEV_LEVEL 3
 
 #include "RTC/NackGenerator.hpp"
@@ -180,8 +180,11 @@ namespace RTC
 			MS_ASSERT(this->nackList.find(seq) == this->nackList.end(), "packet already in the NACK list");
 
 			// Do not send NACK for packets that are already recovered by RTX.
+			// 检查是否已经接受RTX重传列表中
 			if (this->recoveredList.find(seq) != this->recoveredList.end())
+			{
 				continue;
+			}
 
 			this->nackList.emplace(std::make_pair(seq, NackInfo{ seq, seq }));
 		}
