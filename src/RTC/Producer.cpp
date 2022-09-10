@@ -873,7 +873,9 @@ namespace RTC
 
 			// Process the packet.
 			if (!rtpStream->ReceiveRtxPacket(packet))
+			{
 				return result;
+			}
 		}
 		// Should not happen.
 		else
@@ -900,7 +902,9 @@ namespace RTC
 			// Request a key frame for this stream since we may have lost the first packets
 			// (do not do it if this is a key frame).
 			if (this->keyFrameRequestManager && !this->paused && !packet->IsKeyFrame())
+			{
 				this->keyFrameRequestManager->ForceKeyFrameNeeded(packet->GetSsrc());
+			}
 
 			// Update current packet.
 			this->currentRtpPacket = packet;

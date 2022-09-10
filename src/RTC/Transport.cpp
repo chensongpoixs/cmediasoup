@@ -1852,7 +1852,9 @@ namespace RTC
 
 		// Feed the TransportCongestionControlServer.
 		if (this->tccServer)
+		{
 			this->tccServer->IncomingPacket(nowMs, packet);
+		}
 
 		// Get the associated Producer.
 		RTC::Producer* producer = this->rtpListener.GetProducer(packet);

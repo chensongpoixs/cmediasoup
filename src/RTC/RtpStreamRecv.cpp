@@ -385,7 +385,9 @@ namespace RTC
 
 		// Process the packet at codec level.
 		if (packet->GetPayloadType() == GetPayloadType())
+		{
 			RTC::Codecs::Tools::ProcessRtpPacket(packet, GetMimeType());
+		}
 
 		// Mark the packet as retransmitted.
 		RTC::RtpStream::PacketRetransmitted(packet);
@@ -588,7 +590,14 @@ namespace RTC
 	void RtpStreamRecv::RequestKeyFrame()
 	{
 		MS_TRACE();
+		///////////////////////////////////////////////////////////////////////////
+		////                         IDR Request
 
+	    //     关键帧也叫做即时刷新帧，简称IDR帧。对视频来说，IDR帧的解码无需参考之前的帧，因此在丢包严重时可以通过发送关键帧请求进行画面的恢复。
+		// 关键帧的请求方式分为三种：RTCP FIR反馈（Full intra frame request）、RTCP PLI 反馈（Picture Loss Indictor）或SIP Info消息，
+		//							具体使用哪种可通过协商确定.
+ 
+		///////////////////////////////////////////////////////////////////////////
 		if (this->params.usePli)
 		{
 			MS_DEBUG_2TAGS(rtcp, rtx, "sending PLI [ssrc:%" PRIu32 "]", GetSsrc());

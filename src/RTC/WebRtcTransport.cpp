@@ -1200,7 +1200,9 @@ namespace RTC
 
 		// Decrypt the SRTCP packet.
 		if (!this->srtpRecvSession->DecryptSrtcp(const_cast<uint8_t*>(data), &len))
+		{
 			return;
+		}
 
 		RTC::RTCP::Packet* packet = RTC::RTCP::Packet::Parse(data, len);
 

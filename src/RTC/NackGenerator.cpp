@@ -50,14 +50,18 @@ namespace RTC
 			this->lastSeq = seq;
 
 			if (isKeyFrame)
+			{
 				this->keyFrameList.insert(seq);
+			}
 
 			return false;
 		}
 
 		// Obviously never nacked, so ignore.
 		if (seq == this->lastSeq)
+		{
 			return false;
+		}
 
 		// May be an out of order packet, or already handled retransmitted packet,
 		// or a retransmitted packet.
@@ -95,14 +99,18 @@ namespace RTC
 		// newer than the latest seq seen.
 
 		if (isKeyFrame)
+		{
 			this->keyFrameList.insert(seq);
+		}
 
 		// Remove old keyframes.
 		{
 			auto it = this->keyFrameList.lower_bound(seq - MaxPacketAge);
 
 			if (it != this->keyFrameList.begin())
+			{
 				this->keyFrameList.erase(this->keyFrameList.begin(), it);
+			}
 		}
 
 		if (isRecovered)
@@ -113,7 +121,9 @@ namespace RTC
 			auto it = this->recoveredList.lower_bound(seq - MaxPacketAge);
 
 			if (it != this->recoveredList.begin())
+			{
 				this->recoveredList.erase(this->recoveredList.begin(), it);
+			}
 
 			// Do not let a packet pass if it's newer than last seen seq and came via
 			// RTX.
@@ -128,12 +138,16 @@ namespace RTC
 		std::vector<uint16_t> nackBatch = GetNackBatch(NackFilter::SEQ);
 
 		if (!nackBatch.empty())
+		{
 			this->listener->OnNackGeneratorNackRequired(nackBatch);
+		}
 
 		// This is important. Otherwise the running timer (filter:TIME) would be
 		// interrupted and NACKs would never been sent more than once for each seq.
 		if (!this->timer->IsActive())
+		{
 			MayRunTimer();
+		}
 
 		return false;
 	}
@@ -151,7 +165,7 @@ namespace RTC
 		// the latest first packet of a keyframe. If the list is still too large,
 		// clear it and request a keyframe.
 		uint16_t numNewNacks = seqEnd - seqStart;
-
+		// TODO@chensong 这边大于最大nackpacksize数量的时候 就直接丢包 请求关键帧解决了
 		if (this->nackList.size() + numNewNacks > MaxNackPackets)
 		{
 			// clang-format off

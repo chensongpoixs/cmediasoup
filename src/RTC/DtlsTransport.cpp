@@ -804,11 +804,15 @@ namespace RTC
 
 		// Check SSL status and return if it is bad/closed.
 		if (!CheckStatus(read))
+		{
 			return;
+		}
 
 		// Set/update the DTLS timeout.
 		if (!SetTimeout())
+		{
 			return;
+		}
 
 		// Application data received. Notify to the listener.
 		if (read > 0)
@@ -1001,7 +1005,9 @@ namespace RTC
 		MS_TRACE();
 
 		if (BIO_eof(this->sslBioToNetwork))
+		{
 			return;
+		}
 
 		int64_t read;
 		char* data{ nullptr };
@@ -1009,7 +1015,9 @@ namespace RTC
 		read = BIO_get_mem_data(this->sslBioToNetwork, &data); // NOLINT
 
 		if (read <= 0)
+		{
 			return;
+		}
 
 		MS_DEBUG_DEV("%" PRIu64 " bytes of DTLS data ready to sent to the peer", read);
 
