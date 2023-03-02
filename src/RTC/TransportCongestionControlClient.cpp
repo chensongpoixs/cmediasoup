@@ -29,7 +29,7 @@ namespace RTC
 	    maxOutgoingBitrate(maxOutgoingBitrate)
 	{
 		MS_TRACE();
-
+			printf("[%s][%d]\n", __FUNCTION__, __LINE__);
 		webrtc::GoogCcFactoryConfig config;
 
 		// Provide RTCP feedback as well as Receiver Reports.
@@ -67,7 +67,7 @@ namespace RTC
 	TransportCongestionControlClient::~TransportCongestionControlClient()
 	{
 		MS_TRACE();
-
+			printf("[%s][%d]\n", __FUNCTION__, __LINE__);
 		delete this->controllerFactory;
 		this->controllerFactory = nullptr;
 
@@ -84,14 +84,14 @@ namespace RTC
 	void TransportCongestionControlClient::TransportConnected()
 	{
 		MS_TRACE();
-
+			printf("[%s][%d]\n", __FUNCTION__, __LINE__);
 		this->rtpTransportControllerSend->OnNetworkAvailability(true);
 	}
 
 	void TransportCongestionControlClient::TransportDisconnected()
 	{
 		MS_TRACE();
-
+			printf("[%s][%d]\n", __FUNCTION__, __LINE__);
 		auto nowMs = DepLibUV::GetTimeMsInt64();
 
 		this->bitrates.desiredBitrate          = 0u;
@@ -104,7 +104,7 @@ namespace RTC
 	void TransportCongestionControlClient::InsertPacket(webrtc::RtpPacketSendInfo& packetInfo)
 	{
 		MS_TRACE();
-
+			printf("[%s][%d]\n", __FUNCTION__, __LINE__);
 		this->rtpTransportControllerSend->packet_sender()->InsertPacket(packetInfo.length);
 		this->rtpTransportControllerSend->OnAddPacket(packetInfo);
 	}
@@ -112,14 +112,14 @@ namespace RTC
 	webrtc::PacedPacketInfo TransportCongestionControlClient::GetPacingInfo()
 	{
 		MS_TRACE();
-
+			printf("[%s][%d]\n", __FUNCTION__, __LINE__);
 		return this->rtpTransportControllerSend->packet_sender()->GetPacingInfo();
 	}
 
 	void TransportCongestionControlClient::PacketSent(webrtc::RtpPacketSendInfo& packetInfo, int64_t nowMs)
 	{
 		MS_TRACE();
-
+			printf("[%s][%d]\n", __FUNCTION__, __LINE__);
 		// Notify the transport feedback adapter about the sent packet.
 		rtc::SentPacket sentPacket(packetInfo.transport_sequence_number, nowMs);
 		this->rtpTransportControllerSend->OnSentPacket(sentPacket, packetInfo.length);
@@ -128,7 +128,7 @@ namespace RTC
 	void TransportCongestionControlClient::ReceiveEstimatedBitrate(uint32_t bitrate)
 	{
 		MS_TRACE();
-
+			//printf("[%s][%d]\n", __FUNCTION__, __LINE__);
 		this->rtpTransportControllerSend->OnReceivedEstimatedBitrate(bitrate);
 	}
 
@@ -136,7 +136,7 @@ namespace RTC
 	  RTC::RTCP::ReceiverReportPacket* packet, float rtt, int64_t nowMs)
 	{
 		MS_TRACE();
-
+			printf("[%s][%d]\n", __FUNCTION__, __LINE__);
 		webrtc::ReportBlockList reportBlockList;
 
 		for (auto it = packet->Begin(); it != packet->End(); ++it)
@@ -162,12 +162,13 @@ namespace RTC
 	  const RTC::RTCP::FeedbackRtpTransportPacket* feedback)
 	{
 		MS_TRACE();
-
+			printf("[%s][%d]\n", __FUNCTION__, __LINE__);
 		this->rtpTransportControllerSend->OnTransportFeedback(*feedback);
 	}
 
 	void TransportCongestionControlClient::SetMaxOutgoingBitrate(uint32_t maxBitrate)
 	{
+			printf("[%s][%d]\n", __FUNCTION__, __LINE__);
 		if (maxBitrate < this->initialAvailableBitrate)
 			MS_THROW_ERROR("maxOutgoingBitrate must be >= initialAvailableOutgoingBitrate");
 
@@ -180,7 +181,7 @@ namespace RTC
 	void TransportCongestionControlClient::SetDesiredBitrate(uint32_t desiredBitrate, bool force)
 	{
 		MS_TRACE();
-
+			printf("[%s][%d]\n", __FUNCTION__, __LINE__);
 		auto nowMs = DepLibUV::GetTimeMsInt64();
 
 		// Manage it via trending and increase it a bit to avoid immediate oscillations.
@@ -241,21 +242,21 @@ namespace RTC
 	uint32_t TransportCongestionControlClient::GetAvailableBitrate() const
 	{
 		MS_TRACE();
-
+			printf("[%s][%d]\n", __FUNCTION__, __LINE__);
 		return this->bitrates.availableBitrate;
 	}
 
 	void TransportCongestionControlClient::RescheduleNextAvailableBitrateEvent()
 	{
 		MS_TRACE();
-
+			printf("[%s][%d]\n", __FUNCTION__, __LINE__);
 		this->lastAvailableBitrateEventAtMs = DepLibUV::GetTimeMs();
 	}
 
 	void TransportCongestionControlClient::MayEmitAvailableBitrateEvent(uint32_t previousAvailableBitrate)
 	{
 		MS_TRACE();
-
+		printf("[%s][%d]\n", __FUNCTION__, __LINE__);
 		uint64_t nowMs = DepLibUV::GetTimeMsInt64();
 		bool notify{ false };
 
@@ -321,7 +322,7 @@ namespace RTC
 	void TransportCongestionControlClient::OnTargetTransferRate(webrtc::TargetTransferRate targetTransferRate)
 	{
 		MS_TRACE();
-
+			printf("[%s][%d]\n", __FUNCTION__, __LINE__);
 		// NOTE: The same value as 'this->initialAvailableBitrate' is received periodically
 		// regardless of the real available bitrate. Skip such value except for the first time
 		// this event is called.
@@ -354,7 +355,7 @@ namespace RTC
 	  RTC::RtpPacket* packet, const webrtc::PacedPacketInfo& pacingInfo)
 	{
 		MS_TRACE();
-
+			printf("[%s][%d]\n", __FUNCTION__, __LINE__);
 		// Send the packet.
 		this->listener->OnTransportCongestionControlClientSendRtpPacket(this, packet, pacingInfo);
 	}
@@ -362,14 +363,14 @@ namespace RTC
 	RTC::RtpPacket* TransportCongestionControlClient::GeneratePadding(size_t size)
 	{
 		MS_TRACE();
-
+			printf("[%s][%d]\n", __FUNCTION__, __LINE__);
 		return this->probationGenerator->GetNextPacket(size);
 	}
 
 	void TransportCongestionControlClient::OnTimer(Timer* timer)
 	{
 		MS_TRACE();
-
+			printf("[%s][%d]\n", __FUNCTION__, __LINE__);
 		if (timer == this->processTimer)
 		{
 			// Time to call RtpTransportControllerSend::Process().

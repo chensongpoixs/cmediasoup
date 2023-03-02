@@ -28,33 +28,33 @@ namespace RTC
 					"kind":"video",
 					"paused":false,
 					"rtpMapping":{
-					"codecs":[
-					{
-						"mappedPayloadType":101,
-						"payloadType":108
-					},
-					{
-						"mappedPayloadType":102,
-						"payloadType":109
-					}
-					],
-					"encodings":[
-					{
-						"mappedSsrc":806764358,
-						"rid":"r0",
-						"scalabilityMode":"S1T3"
-					},
-					{
-						"mappedSsrc":806764359,
-						"rid":"r1",
-						"scalabilityMode":"S1T3"
-					},
-					{
-						"mappedSsrc":806764360,
-						"rid":"r2",
-						"scalabilityMode":"S1T3"
-					}
-					]
+						"codecs":[
+							{
+								"mappedPayloadType":101,
+								"payloadType":108
+							},
+							{
+								"mappedPayloadType":102,
+								"payloadType":109
+							}
+						],
+						"encodings":[
+							{
+								"mappedSsrc":806764358,
+								"rid":"r0",
+								"scalabilityMode":"S1T3"
+							},
+							{
+								"mappedSsrc":806764359,
+								"rid":"r1",
+								"scalabilityMode":"S1T3"
+							},
+							{
+								"mappedSsrc":806764360,
+								"rid":"r2",
+								"scalabilityMode":"S1T3"
+							}
+						]
 					},
 					"rtpParameters":{
 						"codecs":[
@@ -997,26 +997,30 @@ namespace RTC
 		MS_TRACE();
 
 		if (static_cast<float>((nowMs - this->lastRtcpSentTime) * 1.15) < this->maxRtcpInterval)
+		{
 			return;
+		}
 
 		for (auto& kv : this->mapSsrcRtpStream)
 		{
-			auto* rtpStream = kv.second;
-			auto* report    = rtpStream->GetRtcpReceiverReport();
+			RTC::RtpStreamRecv*			rtpStream = kv.second;
+			RTC::RTCP::ReceiverReport*	report    = rtpStream->GetRtcpReceiverReport();
 
 			packet->AddReceiverReport(report);
 
-			auto* rtxReport = rtpStream->GetRtxRtcpReceiverReport();
+			RTC::RTCP::ReceiverReport*	rtxReport = rtpStream->GetRtxRtcpReceiverReport();
 
 			if (rtxReport)
+			{
 				packet->AddReceiverReport(rtxReport);
+			}
 		}
 
 		// Add a receiver reference time report if no present in the packet.
 		if (!packet->HasReceiverReferenceTime())
 		{
-			auto ntp     = Utils::Time::TimeMs2Ntp(nowMs);
-			auto* report = new RTC::RTCP::ReceiverReferenceTime();
+			Utils::Time::Ntp				    ntp     = Utils::Time::TimeMs2Ntp(nowMs);
+			RTC::RTCP::ReceiverReferenceTime* report	= new RTC::RTCP::ReceiverReferenceTime();
 
 			report->SetNtpSec(ntp.seconds);
 			report->SetNtpFrac(ntp.fractions);

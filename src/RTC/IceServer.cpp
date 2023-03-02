@@ -274,7 +274,7 @@ namespace RTC
 		// Mark the first tuple as selected tuple (if any).
 		if (this->tuples.begin() != this->tuples.end())
 		{
-			INFO_EX_LOG("");
+			//INFO_EX_LOG("");
 			SetSelectedTuple(std::addressof(*this->tuples.begin()));
 		}
 		// Or just emit 'disconnected'.
@@ -299,7 +299,7 @@ namespace RTC
 		MS_ASSERT(
 		  storedTuple,
 		  "cannot force the selected tuple if the given tuple was not already a valid tuple");
-		INFO_EX_LOG("");
+		//INFO_EX_LOG("");
 		// Mark it as selected tuple.
 		SetSelectedTuple(storedTuple);
 	}
@@ -326,7 +326,7 @@ namespace RTC
 					// Store the tuple.
 					// TODO@chensong 20220809 ---记录连接上客户端 ip和port 
 					auto* storedTuple = AddTuple(tuple);
-					INFO_EX_LOG("");
+					//INFO_EX_LOG("");
 					// Mark it as selected tuple.
 					// 设置ice中列表中第一个连接上客户端为验证rtc客户端
 					SetSelectedTuple(storedTuple);
@@ -342,7 +342,7 @@ namespace RTC
 
 					// Store the tuple.
 					auto* storedTuple = AddTuple(tuple);
-					INFO_EX_LOG("");
+					//INFO_EX_LOG("");
 					// Mark it as selected tuple.
 					SetSelectedTuple(storedTuple);
 					// Update state.
@@ -371,7 +371,7 @@ namespace RTC
 
 					// Store the tuple.
 					auto* storedTuple = AddTuple(tuple);
-					INFO_EX_LOG("");
+					//INFO_EX_LOG("");
 					// Mark it as selected tuple.
 					SetSelectedTuple(storedTuple);
 					// Update state.
@@ -385,7 +385,7 @@ namespace RTC
 
 					// Store the tuple.
 					auto* storedTuple = AddTuple(tuple);
-					INFO_EX_LOG("");
+					//INFO_EX_LOG("");
 					// Mark it as selected tuple.
 					SetSelectedTuple(storedTuple);
 					// Update state.
@@ -420,7 +420,7 @@ namespace RTC
 					// If a new tuple store it.
 					if (!storedTuple)
 						storedTuple = AddTuple(tuple);
-					INFO_EX_LOG("");
+					//INFO_EX_LOG("");
 					// Mark it as selected tuple.
 					SetSelectedTuple(storedTuple);
 					// Update state.
@@ -453,7 +453,7 @@ namespace RTC
 					// If a new tuple store it.
 					if (!storedTuple)
 						storedTuple = AddTuple(tuple);
-					INFO_EX_LOG("");
+					//INFO_EX_LOG("");
 					// Mark it as selected tuple.
 					SetSelectedTuple(storedTuple);
 				}

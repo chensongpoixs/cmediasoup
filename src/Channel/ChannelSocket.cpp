@@ -68,7 +68,7 @@ namespace Channel
 			return;
 
 		std::string message = jsonMessage.dump();
-		DEBUG_EX_LOG("message = %s", message.c_str());
+		////DEBUG_EX_LOG("message = %s", message.c_str());
 		if (message.length() > NsPayloadMaxLen)
 		{
 			MS_ERROR_STD("mesage too big");
@@ -86,7 +86,7 @@ namespace Channel
 		if (this->closed)
 			return;
 
-		DEBUG_EX_LOG("message = %s", message );
+		////DEBUG_EX_LOG("message = %s", message );
 		if (messageLen > NsPayloadMaxLen)
 		{
 			MS_ERROR_STD("mesage too big");
@@ -102,7 +102,7 @@ namespace Channel
 		MS_TRACE_STD();
 
 		size_t nsNumLen;
-		DEBUG_EX_LOG("[nsPayload = %s][nsPayloadLen = %u]", nsPayload, nsPayloadLen);
+		////DEBUG_EX_LOG("[nsPayload = %s][nsPayloadLen = %u]", nsPayload, nsPayloadLen);
 		if (nsPayloadLen == 0)
 		{
 			nsNumLen             = 1;
@@ -126,7 +126,7 @@ namespace Channel
 	void ChannelSocket::OnConsumerSocketMessage(ConsumerSocket* /*consumerSocket*/, char* msg, size_t msgLen)
 	{
 		MS_TRACE_STD();
-		DEBUG_EX_LOG("[msg = %s][msglen = %u]", msg, msgLen);
+		////DEBUG_EX_LOG("[msg = %s][msglen = %u]", msg, msgLen);
 		try
 		{
 			json jsonMessage = json::parse(msg, msg + msgLen);

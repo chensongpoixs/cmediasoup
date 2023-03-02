@@ -142,7 +142,7 @@ namespace RTC
 				{
 					packet->SetUsername(
 					  reinterpret_cast<const char*>(attrValuePos), static_cast<size_t>(attrLength));
-					DEBUG_EX_LOG("[pos = %u][username = %s]", pos,  packet->GetUsername().c_str());
+					////DEBUG_EX_LOG("[pos = %u][username = %s]", pos,  packet->GetUsername().c_str());
 					break;
 				}
 
@@ -158,7 +158,7 @@ namespace RTC
 					}
 					
 					packet->SetPriority(Utils::Byte::Get4Bytes(attrValuePos, 0));
-					DEBUG_EX_LOG("[pos = %u][priority =  %u]", pos, packet->GetPriority());
+					////DEBUG_EX_LOG("[pos = %u][priority =  %u]", pos, packet->GetPriority());
 					break;
 				}
 
@@ -174,7 +174,7 @@ namespace RTC
 					}
 					
 					packet->SetIceControlling(Utils::Byte::Get8Bytes(attrValuePos, 0));
-					DEBUG_EX_LOG("[pos = %u][IceControlling = %u]", pos, packet->GetIceControlling());
+					////DEBUG_EX_LOG("[pos = %u][IceControlling = %u]", pos, packet->GetIceControlling());
 					break;
 				}
 
@@ -190,7 +190,7 @@ namespace RTC
 					}
 					
 					packet->SetIceControlled(Utils::Byte::Get8Bytes(attrValuePos, 0));
-					DEBUG_EX_LOG("[pos = %u][iceControlled = %u]", pos,  packet->GetIceControlled());
+					//DEBUG_EX_LOG("[pos = %u][iceControlled = %u]", pos,  packet->GetIceControlled());
 					break;
 				}
 
@@ -206,7 +206,7 @@ namespace RTC
 					}
 					
 					packet->SetUseCandidate();
-					DEBUG_EX_LOG("[pos = %u][UseCandidate = %u]", pos,  packet->HasUseCandidate());
+					//DEBUG_EX_LOG("[pos = %u][UseCandidate = %u]", pos,  packet->HasUseCandidate());
 					break;
 				}
 
@@ -223,7 +223,7 @@ namespace RTC
 					
 					hasMessageIntegrity = true;
 					packet->SetMessageIntegrity(attrValuePos);
-					DEBUG_EX_LOG("[pos = %u][MessageIntegrity = %u]", pos, packet->HasMessageIntegrity());
+					//DEBUG_EX_LOG("[pos = %u][MessageIntegrity = %u]", pos, packet->HasMessageIntegrity());
 					break;
 				}
 
@@ -242,7 +242,7 @@ namespace RTC
 					fingerprintAttrPos = pos;
 					fingerprint        = Utils::Byte::Get4Bytes(attrValuePos, 0);
 					packet->SetFingerprint();
-					DEBUG_EX_LOG("[pos = %u][fingerprint = %u]", pos, fingerprint);
+					//DEBUG_EX_LOG("[pos = %u][fingerprint = %u]", pos, fingerprint);
 					break;
 				}
 
@@ -262,7 +262,7 @@ namespace RTC
 					auto errorCode      = static_cast<uint16_t>(errorClass * 100 + errorNumber);
 					
 					packet->SetErrorCode(errorCode);
-					DEBUG_EX_LOG("[pos = %u][errorClass = %u][errorNumber = %u]", pos, errorClass, errorNumber);
+					//DEBUG_EX_LOG("[pos = %u][errorClass = %u][errorNumber = %u]", pos, errorClass, errorNumber);
 					break;
 				}
 

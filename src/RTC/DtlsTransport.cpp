@@ -43,18 +43,25 @@ inline static int onSslCertificateVerify(int /*preverifyOk*/, X509_STORE_CTX* /*
 
 inline static void onSslInfo(const SSL* ssl, int where, int ret)
 {
-	DEBUG_EX_LOG("[where = %d][ret = %d]", where, ret);
+	////DEBUG_EX_LOG("[where = %d][ret = %d]", where, ret);
 	static_cast<RTC::DtlsTransport*>(SSL_get_ex_data(ssl, 0))->OnSslInfo(where, ret);
 }
 
 inline static unsigned int onSslDtlsTimer(SSL* /*ssl*/, unsigned int timerUs)
 {
 	if (timerUs == 0)
+	{
 		return 100000;
+	}
 	else if (timerUs >= 4000000)
+	{
 		return 4000000;
+	}
 	else
+	{
 		return 2 * timerUs;
+	}
+	return 2 * timerUs;
 }
 
 namespace RTC

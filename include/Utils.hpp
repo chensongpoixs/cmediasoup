@@ -40,18 +40,18 @@ using json = nlohmann::json;
 //	}
 //}
 //#define DEBUG_LOG(format, ...)		var_log(format, ##__VA_ARGS__)
-//#define DEBUG_EX_LOG(format, ...)		DEBUG_LOG("[%s][%d]" format, __FUNCTION__, __LINE__, ##__VA_ARGS__)
+//#define //DEBUG_EX_LOG(format, ...)		DEBUG_LOG("[%s][%d]" format, __FUNCTION__, __LINE__, ##__VA_ARGS__)
 
 //=======
 #include <stdio.h>
 using json = nlohmann::json;
 
    
-void var_log( const char* format, ...);
-#define DEBUG_LOG(format, ...)		var_log(format, ##__VA_ARGS__)
-#define DEBUG_EX_LOG(format, ...)		DEBUG_LOG("[%s][%d] " format, __FUNCTION__, __LINE__, ##__VA_ARGS__)
-#define INFO_EX_LOG(format, ...)		DEBUG_LOG("[%s][%d][info] " format, __FUNCTION__, __LINE__, ##__VA_ARGS__)
-#define DEBUG_EX_ID_LOG(format, ...)		DEBUG_LOG("[%s][%d][%s] " format, __FUNCTION__, __LINE__, id.c_str(),  ##__VA_ARGS__)
+//void var_log( const char* format, ...);
+//#define DEBUG_LOG(format, ...)		var_log(format, ##__VA_ARGS__)
+//#define //DEBUG_EX_LOG(format, ...)		DEBUG_LOG("[%s][%d] " format, __FUNCTION__, __LINE__, ##__VA_ARGS__)
+//#define //INFO_EX_LOG(format, ...)		DEBUG_LOG("[%s][%d][info] " format, __FUNCTION__, __LINE__, ##__VA_ARGS__)
+//#define //DEBUG_EX_ID_LOG(format, ...)		DEBUG_LOG("[%s][%d][%s] " format, __FUNCTION__, __LINE__, id.c_str(),  ##__VA_ARGS__)
 //>>>>>>> d40fa1c367378f962a8c8dd093974a106997055a
 namespace Utils
 {

@@ -32,7 +32,7 @@ namespace RTC
 	  : RTC::Transport::Transport(id, listener, data)
 	{
 		MS_TRACE();
-		DEBUG_EX_LOG("[id = %s][data = %s]", id.c_str(), data.dump().c_str());
+		//DEBUG_EX_LOG("[id = %s][data = %s]", id.c_str(), data.dump().c_str());
 		bool enableUdp{ true };
 		auto jsonEnableUdpIt = data.find("enableUdp");
 
@@ -323,7 +323,7 @@ namespace RTC
 	WebRtcTransport::~WebRtcTransport()
 	{
 		MS_TRACE();
-		DEBUG_EX_LOG("");
+		//DEBUG_EX_LOG("");
 		// Must delete the DTLS transport first since it will generate a DTLS alert
 		// to be sent.
 		delete this->dtlsTransport;
@@ -470,7 +470,7 @@ namespace RTC
 				break;
 		}
 
-		DEBUG_EX_LOG("jsonObject  = %s", jsonObject.dump().c_str());
+		//DEBUG_EX_LOG("jsonObject  = %s", jsonObject.dump().c_str());
 	}
 
 	void WebRtcTransport::FillJsonStats(json& jsonArray)
@@ -530,13 +530,13 @@ namespace RTC
 				jsonObject["dtlsState"] = "closed";
 				break;
 		}
-		DEBUG_EX_LOG("jsonArray = %s", jsonArray.dump().c_str());
+		//DEBUG_EX_LOG("jsonArray = %s", jsonArray.dump().c_str());
 	}
 
 	void WebRtcTransport::HandleRequest(Channel::ChannelRequest* request)
 	{
 		MS_TRACE();
-		DEBUG_EX_LOG("[method = %s][data = %s][internal = %s]", request->method.c_str(), request->data.dump().c_str(), request->internal.dump().c_str());
+		//DEBUG_EX_LOG("[method = %s][data = %s][internal = %s]", request->method.c_str(), request->data.dump().c_str(), request->internal.dump().c_str());
 		switch (request->methodId)
 		{
 			case Channel::ChannelRequest::MethodId::TRANSPORT_CONNECT:
@@ -688,7 +688,7 @@ namespace RTC
 					default:
 						MS_ABORT("invalid local DTLS role");
 				}
-				DEBUG_EX_LOG("[reply = %s]", data.dump().c_str());
+				//DEBUG_EX_LOG("[reply = %s]", data.dump().c_str());
 				request->Accept(data);
 
 				break;
@@ -715,7 +715,7 @@ namespace RTC
 				(*jsonIceParametersIt)["usernameFragment"] = this->iceServer->GetUsernameFragment();
 				(*jsonIceParametersIt)["password"]         = this->iceServer->GetPassword();
 				(*jsonIceParametersIt)["iceLite"]          = true;
-				DEBUG_EX_LOG("reply = %s", data.dump().c_str());
+				//DEBUG_EX_LOG("reply = %s", data.dump().c_str());
 				request->Accept(data);
 
 				break;
@@ -732,7 +732,7 @@ namespace RTC
 	void WebRtcTransport::HandleNotification(PayloadChannel::Notification* notification)
 	{
 		MS_TRACE();
-		DEBUG_EX_LOG("[event = %s][data = %s][%s]", notification->event.c_str(), notification->data.dump().c_str(), notification->internal.dump().c_str());
+		//DEBUG_EX_LOG("[event = %s][data = %s][%s]", notification->event.c_str(), notification->data.dump().c_str(), notification->internal.dump().c_str());
 		// Pass it to the parent class.
 		RTC::Transport::HandleNotification(notification);
 	}
@@ -740,7 +740,7 @@ namespace RTC
 	inline bool WebRtcTransport::IsConnected() const
 	{
 		MS_TRACE();
-		DEBUG_EX_LOG("");
+		//DEBUG_EX_LOG("");
 		// clang-format off
 		return (
 			(
@@ -755,7 +755,7 @@ namespace RTC
 	void WebRtcTransport::MayRunDtlsTransport()
 	{
 		MS_TRACE();
-		DEBUG_EX_LOG("");
+		//DEBUG_EX_LOG("");
 		// Do nothing if we have the same local DTLS role as the DTLS transport.
 		// NOTE: local role in DTLS transport can be NONE, but not ours.
 		if (this->dtlsTransport->GetLocalRole() == this->dtlsRole)
@@ -841,7 +841,7 @@ namespace RTC
 	  RTC::Consumer* /*consumer*/, RTC::RtpPacket* packet, RTC::Transport::onSendCallback* cb)
 	{
 		MS_TRACE();
-		DEBUG_EX_LOG("");
+		//DEBUG_EX_LOG("");
 		if (!IsConnected())
 		{
 			if (cb)
@@ -890,7 +890,7 @@ namespace RTC
 	void WebRtcTransport::SendRtcpPacket(RTC::RTCP::Packet* packet)
 	{
 		MS_TRACE();
-		DEBUG_EX_LOG("");
+		//DEBUG_EX_LOG("");
 		if (!IsConnected())
 			return;
 
@@ -923,7 +923,7 @@ namespace RTC
 
 		const uint8_t* data = packet->GetData();
 		size_t len          = packet->GetSize();
-		DEBUG_EX_LOG("len = %lu", len);
+	//	//DEBUG_EX_LOG("len = %lu", len);
 		// Ensure there is sending SRTP session.
 		if (!this->srtpSendSession)
 		{
@@ -945,14 +945,14 @@ namespace RTC
 	  RTC::DataConsumer* dataConsumer, uint32_t ppid, const uint8_t* msg, size_t len, onQueuedCallback* cb)
 	{
 		MS_TRACE();
-		DEBUG_EX_LOG("msg = %s", msg);
+		//DEBUG_EX_LOG("msg = %s", msg);
 		this->sctpAssociation->SendSctpMessage(dataConsumer, ppid, msg, len, cb);
 	}
 
 	void WebRtcTransport::SendSctpData(const uint8_t* data, size_t len)
 	{
 		MS_TRACE();
-		DEBUG_EX_LOG("");
+		//DEBUG_EX_LOG("");
 		// clang-format on
 		if (!IsConnected())
 		{
@@ -967,7 +967,7 @@ namespace RTC
 	void WebRtcTransport::RecvStreamClosed(uint32_t ssrc)
 	{
 		MS_TRACE();
-		DEBUG_EX_LOG("ssrc = %lu", ssrc);
+		//DEBUG_EX_LOG("ssrc = %lu", ssrc);
 		if (this->srtpRecvSession)
 		{
 			this->srtpRecvSession->RemoveStream(ssrc);
@@ -977,7 +977,7 @@ namespace RTC
 	void WebRtcTransport::SendStreamClosed(uint32_t ssrc)
 	{
 		MS_TRACE();
-		DEBUG_EX_LOG("ssrc = %lu", ssrc);
+		//DEBUG_EX_LOG("ssrc = %lu", ssrc);
 		if (this->srtpSendSession)
 		{
 			this->srtpSendSession->RemoveStream(ssrc);
@@ -996,9 +996,9 @@ namespace RTC
 		if (RTC::StunPacket::IsStun(data, len))
 		{
 //<<<<<<< HEAD
-//			DEBUG_EX_LOG("stun");
+//			//DEBUG_EX_LOG("stun");
 //=======
-			DEBUG_EX_ID_LOG("stun");
+			//DEBUG_EX_ID_LOG("stun");
 //>>>>>>> d40fa1c367378f962a8c8dd093974a106997055a
 			OnStunDataReceived(tuple, data, len);
 		}
@@ -1006,9 +1006,9 @@ namespace RTC
 		else if (RTC::RTCP::Packet::IsRtcp(data, len))
 		{
 //<<<<<<< HEAD
-//			DEBUG_EX_LOG("IsRtcp");
+//			//DEBUG_EX_LOG("IsRtcp");
 //=======
-			DEBUG_EX_ID_LOG("IsRtcp");
+			//DEBUG_EX_ID_LOG("IsRtcp");
 //>>>>>>> d40fa1c367378f962a8c8dd093974a106997055a
 			OnRtcpDataReceived(tuple, data, len);
 		}
@@ -1016,9 +1016,9 @@ namespace RTC
 		else if (RTC::RtpPacket::IsRtp(data, len))
 		{
 //<<<<<<< HEAD
-//			DEBUG_EX_LOG("IsRtp");
+//			//DEBUG_EX_LOG("IsRtp");
 //=======
-			DEBUG_EX_ID_LOG("IsRtp");
+			//DEBUG_EX_ID_LOG("IsRtp");
 //>>>>>>> d40fa1c367378f962a8c8dd093974a106997055a
 			OnRtpDataReceived(tuple, data, len);
 		}
@@ -1026,12 +1026,12 @@ namespace RTC
 		else if (RTC::DtlsTransport::IsDtls(data, len))
 		{
 //<<<<<<< HEAD
-//			DEBUG_EX_LOG("IsDtls");
+//			//DEBUG_EX_LOG("IsDtls");
 //=======
 //<<<<<<< HEAD
-//			DEBUG_EX_LOG("IsDtls");
+//			//DEBUG_EX_LOG("IsDtls");
 //=======
-			DEBUG_EX_ID_LOG("IsDtls"); // 这边修改DTLS的状态的哈 ？？
+			//DEBUG_EX_ID_LOG("IsDtls"); // 这边修改DTLS的状态的哈 ？？
 //>>>>>>> 69463cce016535ae4b8531ff725a35bc270954e5
 //>>>>>>> d40fa1c367378f962a8c8dd093974a106997055a
 			OnDtlsDataReceived(tuple, data, len);
@@ -1039,9 +1039,9 @@ namespace RTC
 		else
 		{
 //<<<<<<< HEAD
-//			DEBUG_EX_LOG("error type");
+//			//DEBUG_EX_LOG("error type");
 //=======
-			DEBUG_EX_ID_LOG("error type");
+			//DEBUG_EX_ID_LOG("error type");
 //>>>>>>> d40fa1c367378f962a8c8dd093974a106997055a
 			MS_WARN_DEV("ignoring received packet of unknown type");
 		}
@@ -1051,7 +1051,7 @@ namespace RTC
 	  RTC::TransportTuple* tuple, const uint8_t* data, size_t len)
 	{
 		MS_TRACE();
-		DEBUG_EX_LOG("len = %lu", len);
+		////DEBUG_EX_LOG("len = %lu", len);
 		RTC::StunPacket* packet = RTC::StunPacket::Parse(data, len);
 
 		if (!packet)
@@ -1060,7 +1060,7 @@ namespace RTC
 
 			return;
 		}
-		DEBUG_EX_ID_LOG("[]");
+		//DEBUG_EX_ID_LOG("[]");
 		// Pass it to the IceServer.
 		this->iceServer->ProcessStunPacket(packet, tuple);
 
@@ -1071,7 +1071,7 @@ namespace RTC
 	  const RTC::TransportTuple* tuple, const uint8_t* data, size_t len)
 	{
 		MS_TRACE();
-		DEBUG_EX_LOG("len = %lu", len);
+		////DEBUG_EX_LOG("len = %lu", len);
 		// Ensure it comes from a valid tuple.
 		if (!this->iceServer->IsValidTuple(tuple))
 		{
@@ -1104,7 +1104,11 @@ namespace RTC
 	  RTC::TransportTuple* tuple, const uint8_t* data, size_t len)
 	{
 		MS_TRACE();
-		DEBUG_EX_LOG("len = %lu", len);
+		////DEBUG_EX_LOG("len = %lu", len);
+		if (len == 522)
+		{
+			//DEBUG_EX_LOG("");
+		}
 		// Ensure DTLS is connected.
 		if (this->dtlsTransport->GetState() != RTC::DtlsTransport::DtlsState::CONNECTED)
 		{
@@ -1122,6 +1126,7 @@ namespace RTC
 		}
 
 		// Ensure it comes from a valid tuple.
+		// TODO@chensong 2022-02-07  检查本地是否有IP和port的缓存 没有就忽
 		if (!this->iceServer->IsValidTuple(tuple))
 		{
 			MS_WARN_TAG(rtp, "ignoring RTP packet coming from an invalid tuple");
@@ -1173,7 +1178,7 @@ namespace RTC
 	  RTC::TransportTuple* tuple, const uint8_t* data, size_t len)
 	{
 		MS_TRACE();
-		DEBUG_EX_LOG("len = %lu", len);
+		////DEBUG_EX_LOG("len = %lu", len);
 		// Ensure DTLS is connected.
 		if (this->dtlsTransport->GetState() != RTC::DtlsTransport::DtlsState::CONNECTED)
 		{
@@ -1221,17 +1226,24 @@ namespace RTC
 	  RTC::UdpSocket* socket, const uint8_t* data, size_t len, const struct sockaddr* remoteAddr)
 	{
 		MS_TRACE();
-		DEBUG_EX_LOG("len = %lu", len);
+		////DEBUG_EX_LOG("len = %lu", len);
 		RTC::TransportTuple tuple(socket, remoteAddr);
-
+		std::chrono::steady_clock::time_point cur_time_ms;
+		std::chrono::steady_clock::time_point pre_time = std::chrono::steady_clock::now();
+		std::chrono::steady_clock::duration dur;
+		std::chrono::microseconds ms;
 		OnPacketReceived(&tuple, data, len);
+		cur_time_ms = std::chrono::steady_clock::now();
+		dur = cur_time_ms - pre_time;
+		ms = std::chrono::duration_cast<std::chrono::microseconds>(dur);
+		//DEBUG_EX_LOG("udp recv packet [microseconds = %u]", ms.count());
 	}
 
 	inline void WebRtcTransport::OnRtcTcpConnectionClosed(
 	  RTC::TcpServer* /*tcpServer*/, RTC::TcpConnection* connection)
 	{
 		MS_TRACE();
-		DEBUG_EX_LOG("");
+		//DEBUG_EX_LOG("");
 		RTC::TransportTuple tuple(connection);
 
 		this->iceServer->RemoveTuple(&tuple);
@@ -1241,7 +1253,7 @@ namespace RTC
 	  RTC::TcpConnection* connection, const uint8_t* data, size_t len)
 	{
 		MS_TRACE();
-		DEBUG_EX_LOG("len = %lu", len);
+		////DEBUG_EX_LOG("len = %lu", len);
 		RTC::TransportTuple tuple(connection);
 
 		OnPacketReceived(&tuple, data, len);
@@ -1251,7 +1263,7 @@ namespace RTC
 	  const RTC::IceServer* /*iceServer*/, const RTC::StunPacket* packet, RTC::TransportTuple* tuple)
 	{
 		MS_TRACE();
-		DEBUG_EX_LOG("");
+		//DEBUG_EX_LOG("");
 		// Send the STUN response over the same transport tuple.
 		tuple->Send(packet->GetData(), packet->GetSize());
 
@@ -1277,7 +1289,7 @@ namespace RTC
 		json data = json::object();
 
 		this->iceServer->GetSelectedTuple()->FillJson(data["iceSelectedTuple"]);
-		DEBUG_EX_LOG("data = %s", data.dump().c_str());
+		//DEBUG_EX_LOG("data = %s", data.dump().c_str());
 		Channel::ChannelNotifier::Emit(this->id, "iceselectedtuplechange", data);
 	}
 
@@ -1303,7 +1315,7 @@ namespace RTC
 			RTC::Transport::Connected();
 		}
 
-		DEBUG_EX_LOG("data = %s", data.dump().c_str());
+		//DEBUG_EX_LOG("data = %s", data.dump().c_str());
 	}
 
 	inline void WebRtcTransport::OnIceServerCompleted(const RTC::IceServer* /*iceServer*/)
@@ -1327,7 +1339,7 @@ namespace RTC
 		{
 			RTC::Transport::Connected();
 		}
-		DEBUG_EX_LOG("data = %s", data.dump().c_str());
+		//DEBUG_EX_LOG("data = %s", data.dump().c_str());
 	}
 
 	inline void WebRtcTransport::OnIceServerDisconnected(const RTC::IceServer* /*iceServer*/)
@@ -1348,7 +1360,7 @@ namespace RTC
 		{
 			RTC::Transport::Disconnected();
 		}
-		DEBUG_EX_LOG("data = %s", data.dump().c_str());
+		//DEBUG_EX_LOG("data = %s", data.dump().c_str());
 	}
 
 	inline void WebRtcTransport::OnDtlsTransportConnecting(const RTC::DtlsTransport* /*dtlsTransport*/)
@@ -1361,7 +1373,7 @@ namespace RTC
 		json data = json::object();
 
 		data["dtlsState"] = "connecting";
-		DEBUG_EX_LOG("data = %s", data.dump().c_str());
+		//DEBUG_EX_LOG("data = %s", data.dump().c_str());
 		Channel::ChannelNotifier::Emit(this->id, "dtlsstatechange", data);
 	}
 
@@ -1407,7 +1419,7 @@ namespace RTC
 			data["dtlsRemoteCert"] = remoteCert;
 
 			Channel::ChannelNotifier::Emit(this->id, "dtlsstatechange", data);
-			DEBUG_EX_LOG("data = %s", data.dump().c_str());
+			//DEBUG_EX_LOG("data = %s", data.dump().c_str());
 			// Tell the parent class.
 			RTC::Transport::Connected();
 		}
@@ -1430,7 +1442,7 @@ namespace RTC
 		json data = json::object();
 
 		data["dtlsState"] = "failed";
-		DEBUG_EX_LOG("data = %s", data.dump().c_str());
+		//DEBUG_EX_LOG("data = %s", data.dump().c_str());
 		Channel::ChannelNotifier::Emit(this->id, "dtlsstatechange", data);
 	}
 
@@ -1444,7 +1456,7 @@ namespace RTC
 		json data = json::object();
 
 		data["dtlsState"] = "closed";
-		DEBUG_EX_LOG("data = %s", data.dump().c_str());
+		//DEBUG_EX_LOG("data = %s", data.dump().c_str());
 		Channel::ChannelNotifier::Emit(this->id, "dtlsstatechange", data);
 
 		// Tell the parent class.
@@ -1463,9 +1475,9 @@ namespace RTC
 			return;
 		}
 //<<<<<<< HEAD
-//		DEBUG_EX_LOG("len = %lu", len);
+//		//DEBUG_EX_LOG("len = %lu", len);
 //=======
-		DEBUG_EX_LOG("len = %lu", len); 
+		////DEBUG_EX_LOG("len = %lu", len); 
 
 		// TODO@chensong 20220522     
 		//TLSv1.3 发送 Server Hello、 Certificate、Certificate Status、 Server key Exchange、 Server Hello Done
@@ -1480,7 +1492,7 @@ namespace RTC
 	  const RTC::DtlsTransport* /*dtlsTransport*/, const uint8_t* data, size_t len)
 	{
 		MS_TRACE();
-		DEBUG_EX_LOG("len = %lu", len);
+		////DEBUG_EX_LOG("len = %lu", len);
 		// Pass it to the parent transport.
 		RTC::Transport::ReceiveSctpData(data, len);
 	}

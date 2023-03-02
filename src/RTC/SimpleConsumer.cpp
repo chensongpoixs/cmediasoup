@@ -19,7 +19,7 @@ namespace RTC
 	  : RTC::Consumer::Consumer(id, producerId, listener, data, RTC::RtpParameters::Type::SIMPLE)
 	{
 		MS_TRACE();
-		DEBUG_EX_LOG("producerId = %s, data = %s", producerId.c_str(), data.dump().c_str());
+		////DEBUG_EX_LOG("producerId = %s, data = %s", producerId.c_str(), data.dump().c_str());
 		// Ensure there is a single encoding.
 		if (this->consumableRtpEncodings.size() != 1u)
 			MS_THROW_TYPE_ERROR("invalid consumableRtpEncodings with size != 1");
@@ -36,7 +36,7 @@ namespace RTC
 	SimpleConsumer::~SimpleConsumer()
 	{
 		MS_TRACE();
-		DEBUG_EX_LOG("");
+		////DEBUG_EX_LOG("");
 		delete this->rtpStream;
 	}
 
@@ -49,7 +49,7 @@ namespace RTC
 
 		// Add rtpStream.
 		this->rtpStream->FillJson(jsonObject["rtpStream"]);
-		DEBUG_EX_LOG("jsonObject = %s", jsonObject.dump().c_str());
+		////DEBUG_EX_LOG("jsonObject = %s", jsonObject.dump().c_str());
 	}
 
 	void SimpleConsumer::FillJsonStats(json& jsonArray) const
@@ -66,7 +66,7 @@ namespace RTC
 			jsonArray.emplace_back(json::value_t::object);
 			this->producerRtpStream->FillJsonStats(jsonArray[1]);
 		}
-		DEBUG_EX_LOG("jsonArray = %s", jsonArray.dump().c_str());
+		////DEBUG_EX_LOG("jsonArray = %s", jsonArray.dump().c_str());
 	}
 
 	void SimpleConsumer::FillJsonScore(json& jsonObject) const
@@ -83,13 +83,13 @@ namespace RTC
 			jsonObject["producerScore"] = 0;
 
 		jsonObject["producerScores"] = *this->producerRtpStreamScores;
-		DEBUG_EX_LOG("jsonObject = %s", jsonObject.dump().c_str());
+		////DEBUG_EX_LOG("jsonObject = %s", jsonObject.dump().c_str());
 	}
 
 	void SimpleConsumer::HandleRequest(Channel::ChannelRequest* request)
 	{
 		MS_TRACE();
-		DEBUG_EX_LOG("methodid = %d, method = %s, data = %s, internal = %s", request->methodId, request->method.c_str(), request->data.dump().c_str(), request->internal.dump().c_str());
+		////DEBUG_EX_LOG("methodid = %d, method = %s, data = %s, internal = %s", request->methodId, request->method.c_str(), request->data.dump().c_str(), request->internal.dump().c_str());
 		switch (request->methodId)
 		{
 			case Channel::ChannelRequest::MethodId::CONSUMER_REQUEST_KEY_FRAME:
@@ -122,14 +122,14 @@ namespace RTC
 	void SimpleConsumer::ProducerRtpStream(RTC::RtpStream* rtpStream, uint32_t /*mappedSsrc*/)
 	{
 		MS_TRACE();
-		DEBUG_EX_LOG("");
+		////DEBUG_EX_LOG("");
 		this->producerRtpStream = rtpStream;
 	}
 
 	void SimpleConsumer::ProducerNewRtpStream(RTC::RtpStream* rtpStream, uint32_t /*mappedSsrc*/)
 	{
 		MS_TRACE();
-		DEBUG_EX_LOG("");
+		////DEBUG_EX_LOG("");
 		this->producerRtpStream = rtpStream;
 
 		// Emit the score event.
@@ -140,7 +140,7 @@ namespace RTC
 	  RTC::RtpStream* /*rtpStream*/, uint8_t /*score*/, uint8_t /*previousScore*/)
 	{
 		MS_TRACE();
-		DEBUG_EX_LOG("");
+		////DEBUG_EX_LOG("");
 		// Emit the score event.
 		EmitScore();
 	}
@@ -148,14 +148,14 @@ namespace RTC
 	void SimpleConsumer::ProducerRtcpSenderReport(RTC::RtpStream* /*rtpStream*/, bool /*first*/)
 	{
 		MS_TRACE();
-		DEBUG_EX_LOG("");
+		////DEBUG_EX_LOG("");
 		// Do nothing.
 	}
 
 	uint8_t SimpleConsumer::GetBitratePriority() const
 	{
 		MS_TRACE();
-		DEBUG_EX_LOG("");
+		////DEBUG_EX_LOG("");
 		MS_ASSERT(this->externallyManagedBitrate, "bitrate is not externally managed");
 
 		// Audio SimpleConsumer does not play the BWE game.
@@ -171,7 +171,7 @@ namespace RTC
 	uint32_t SimpleConsumer::IncreaseLayer(uint32_t bitrate, bool /*considerLoss*/)
 	{
 		MS_TRACE();
-		DEBUG_EX_LOG("bitrate = %lu", bitrate);
+		////DEBUG_EX_LOG("bitrate = %lu", bitrate);
 		MS_ASSERT(this->externallyManagedBitrate, "bitrate is not externally managed");
 		MS_ASSERT(this->kind == RTC::Media::Kind::VIDEO, "should be video");
 		MS_ASSERT(IsActive(), "should be active");
@@ -201,7 +201,7 @@ namespace RTC
 		MS_ASSERT(this->externallyManagedBitrate, "bitrate is not externally managed");
 		MS_ASSERT(this->kind == RTC::Media::Kind::VIDEO, "should be video");
 		MS_ASSERT(IsActive(), "should be active");
-		DEBUG_EX_LOG("");
+		////DEBUG_EX_LOG("");
 		this->managingBitrate = false;
 
 		// SimpleConsumer does not play the BWE game (even if video kind).
@@ -210,7 +210,7 @@ namespace RTC
 	uint32_t SimpleConsumer::GetDesiredBitrate() const
 	{
 		MS_TRACE();
-		DEBUG_EX_LOG("");
+		////DEBUG_EX_LOG("");
 		MS_ASSERT(this->externallyManagedBitrate, "bitrate is not externally managed");
 
 		// Audio SimpleConsumer does not play the BWE game.
@@ -241,7 +241,7 @@ namespace RTC
 			return;
 
 		auto payloadType = packet->GetPayloadType();
-		DEBUG_EX_LOG("payloadType = %d", payloadType);
+		////DEBUG_EX_LOG("payloadType = %d", payloadType);
 		// NOTE: This may happen if this Consumer supports just some codecs of those
 		// in the corresponding Producer.
 		if (this->supportedCodecPayloadTypes.find(payloadType) == this->supportedCodecPayloadTypes.end())
@@ -329,7 +329,7 @@ namespace RTC
 	  RTC::RTCP::CompoundPacket* packet, RTC::RtpStreamSend* rtpStream, uint64_t nowMs)
 	{
 		MS_TRACE();
-		DEBUG_EX_LOG("");
+		////DEBUG_EX_LOG("");
 		MS_ASSERT(rtpStream == this->rtpStream, "RTP stream does not match");
 
 		if (static_cast<float>((nowMs - this->lastRtcpSentTime) * 1.15) < this->maxRtcpInterval)
@@ -354,7 +354,7 @@ namespace RTC
 	  uint32_t /*mappedSsrc*/, uint8_t& worstRemoteFractionLost)
 	{
 		MS_TRACE();
-		DEBUG_EX_LOG("");
+		////DEBUG_EX_LOG("");
 		if (!IsActive())
 			return;
 
@@ -368,7 +368,7 @@ namespace RTC
 	void SimpleConsumer::ReceiveNack(RTC::RTCP::FeedbackRtpNackPacket* nackPacket)
 	{
 		MS_TRACE();
-		DEBUG_EX_LOG("");
+		////DEBUG_EX_LOG("");
 		if (!IsActive())
 			return;
 
@@ -382,7 +382,7 @@ namespace RTC
 	  RTC::RTCP::FeedbackPs::MessageType messageType, uint32_t ssrc)
 	{
 		MS_TRACE();
-		DEBUG_EX_LOG("messageType = %d, ssrc = %lu", messageType, ssrc);
+		////DEBUG_EX_LOG("messageType = %d, ssrc = %lu", messageType, ssrc);
 		switch (messageType)
 		{
 			case RTC::RTCP::FeedbackPs::MessageType::PLI:
@@ -411,14 +411,14 @@ namespace RTC
 	void SimpleConsumer::ReceiveRtcpReceiverReport(RTC::RTCP::ReceiverReport* report)
 	{
 		MS_TRACE();
-		DEBUG_EX_LOG("");
+		////DEBUG_EX_LOG("");
 		this->rtpStream->ReceiveRtcpReceiverReport(report);
 	}
 
 	uint32_t SimpleConsumer::GetTransmissionRate(uint64_t nowMs)
 	{
 		MS_TRACE();
-		DEBUG_EX_LOG("");
+		////DEBUG_EX_LOG("");
 		if (!IsActive())
 			return 0u;
 
@@ -428,14 +428,14 @@ namespace RTC
 	float SimpleConsumer::GetRtt() const
 	{
 		MS_TRACE();
-		DEBUG_EX_LOG("");
+		////DEBUG_EX_LOG("");
 		return this->rtpStream->GetRtt();
 	}
 
 	void SimpleConsumer::UserOnTransportConnected()
 	{
 		MS_TRACE();
-		DEBUG_EX_LOG("");
+		////DEBUG_EX_LOG("");
 		this->syncRequired = true;
 
 		if (IsActive())
@@ -445,14 +445,14 @@ namespace RTC
 	void SimpleConsumer::UserOnTransportDisconnected()
 	{
 		MS_TRACE();
-		DEBUG_EX_LOG("");
+		////DEBUG_EX_LOG("");
 		this->rtpStream->Pause();
 	}
 
 	void SimpleConsumer::UserOnPaused()
 	{
 		MS_TRACE();
-		DEBUG_EX_LOG("");
+		////DEBUG_EX_LOG("");
 		this->rtpStream->Pause();
 
 		if (this->externallyManagedBitrate && this->kind == RTC::Media::Kind::VIDEO)
@@ -462,7 +462,7 @@ namespace RTC
 	void SimpleConsumer::UserOnResumed()
 	{
 		MS_TRACE();
-		DEBUG_EX_LOG("");
+		////DEBUG_EX_LOG("");
 		this->syncRequired = true;
 
 		if (IsActive())
@@ -472,7 +472,7 @@ namespace RTC
 	void SimpleConsumer::CreateRtpStream()
 	{
 		MS_TRACE();
-		DEBUG_EX_LOG("");
+		////DEBUG_EX_LOG("");
 		auto& encoding         = this->rtpParameters.encodings[0];
 		const auto* mediaCodec = this->rtpParameters.GetCodecForEncoding(encoding);
 
@@ -553,7 +553,7 @@ namespace RTC
 	void SimpleConsumer::RequestKeyFrame()
 	{
 		MS_TRACE();
-		DEBUG_EX_LOG("");
+		////DEBUG_EX_LOG("");
 		if (this->kind != RTC::Media::Kind::VIDEO)
 			return;
 
@@ -569,7 +569,7 @@ namespace RTC
 		json data = json::object();
 
 		FillJsonScore(data);
-		DEBUG_EX_LOG("data = %s", data.dump().c_str());
+		////DEBUG_EX_LOG("data = %s", data.dump().c_str());
 		Channel::ChannelNotifier::Emit(this->id, "score", data);
 	}
 
@@ -577,7 +577,7 @@ namespace RTC
 	  RTC::RtpStream* /*rtpStream*/, uint8_t /*score*/, uint8_t /*previousScore*/)
 	{
 		MS_TRACE();
-		DEBUG_EX_LOG("");
+		////DEBUG_EX_LOG("");
 		// Emit the score event.
 		EmitScore();
 	}
@@ -586,7 +586,7 @@ namespace RTC
 	  RTC::RtpStreamSend* /*rtpStream*/, RTC::RtpPacket* packet)
 	{
 		MS_TRACE();
-		DEBUG_EX_LOG("");
+		////DEBUG_EX_LOG("");
 		this->listener->OnConsumerRetransmitRtpPacket(this, packet);
 
 		// May emit 'trace' event.
