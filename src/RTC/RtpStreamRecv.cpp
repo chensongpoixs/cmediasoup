@@ -263,7 +263,7 @@ namespace RTC
 		if (packet->GetPayloadType() == GetPayloadType())
 		{
 			RTC::Codecs::Tools::ProcessRtpPacket(packet, GetMimeType());
-			packet->Dump();
+			//packet->Dump();
 		}
 
 		// Pass the packet to the NackGenerator.

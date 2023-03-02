@@ -302,10 +302,10 @@ namespace RTC
 		MS_DUMP("  packet size       : %zu bytes", GetSize());
 		MS_DUMP("  spatial layer     : %" PRIu8, GetSpatialLayer());
 		MS_DUMP("  temporal layer    : %" PRIu8, GetTemporalLayer());
-		if (payloadDescriptorHandler)
+		/*if (payloadDescriptorHandler)
 		{
 			payloadDescriptorHandler->Dump();
-		}
+		}*/
 		MS_DUMP("</RtpPacket>");
 	}
 

@@ -1227,15 +1227,15 @@ namespace RTC
 	{
 		MS_TRACE();
 		////DEBUG_EX_LOG("len = %lu", len);
-		RTC::TransportTuple tuple(socket, remoteAddr);
-		std::chrono::steady_clock::time_point cur_time_ms;
+		 RTC::TransportTuple tuple(socket, remoteAddr);
+		/*std::chrono::steady_clock::time_point cur_time_ms;
 		std::chrono::steady_clock::time_point pre_time = std::chrono::steady_clock::now();
 		std::chrono::steady_clock::duration dur;
-		std::chrono::microseconds ms;
+		std::chrono::microseconds ms;*/
 		OnPacketReceived(&tuple, data, len);
-		cur_time_ms = std::chrono::steady_clock::now();
+		/*cur_time_ms = std::chrono::steady_clock::now();
 		dur = cur_time_ms - pre_time;
-		ms = std::chrono::duration_cast<std::chrono::microseconds>(dur);
+		ms = std::chrono::duration_cast<std::chrono::microseconds>(dur);*/
 		//DEBUG_EX_LOG("udp recv packet [microseconds = %u]", ms.count());
 	}
 
