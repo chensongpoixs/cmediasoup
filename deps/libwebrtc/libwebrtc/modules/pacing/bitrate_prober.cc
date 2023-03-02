@@ -56,7 +56,7 @@ BitrateProberConfig::BitrateProberConfig(
     : min_probe_packets_sent("min_probe_packets_sent", 5),
       min_probe_delta("min_probe_delta", TimeDelta::ms(1)),
       min_probe_duration("min_probe_duration", TimeDelta::ms(15)),
-      max_probe_delay("max_probe_delay", TimeDelta::ms(3)) {
+      max_probe_delay("max_probe_delay", TimeDelta::ms(20)) {
   ParseFieldTrial({&min_probe_packets_sent, &min_probe_delta,
                    &min_probe_duration, &max_probe_delay},
                   key_value_config->Lookup("WebRTC-Bwe-ProbingConfiguration"));
@@ -181,9 +181,8 @@ int BitrateProber::TimeUntilNextProbe(int64_t now_ms) {
   if (next_probe_time_ms_ >= 0) {
     time_until_probe_ms = next_probe_time_ms_ - now_ms;
     if (time_until_probe_ms < -config_.max_probe_delay->ms()) {
-      MS_WARN_TAG(bwe, "probe delay too high [next_ms:%" PRIi64 ", now_ms:%" PRIi64 "]",
-                       next_probe_time_ms_,
-                       now_ms);
+      MS_WARN_TAG(bwe, "probe delay too high [next_ms:%" PRIi64 ", now_ms:%" PRIi64 ", max_probe_delay = %" PRIi64 ", time_until_probe_ms = %" PRIi32 "]",
+                       next_probe_time_ms_, now_ms, config_.max_probe_delay->ms(), time_until_probe_ms);
       return -1;
     }
   }
